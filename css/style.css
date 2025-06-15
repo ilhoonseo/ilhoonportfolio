@@ -94,7 +94,7 @@ body {
 
 /* 섹션 공통 스타일 */
 section {
-    padding: 5rem 2rem;
+    padding: 2.5rem 0.7rem;
 }
 
 section h2 {
@@ -194,7 +194,7 @@ section h2 {
 
 /* Contact 섹션 */
 .contact {
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 100%);
 }
 
 .contact-content {
@@ -328,4 +328,149 @@ img {
 
 .webapp-link:hover {
     background: #0056b3;
+}
+
+/* 햄버거 메뉴 */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    width: 30px;
+    height: 25px;
+    justify-content: space-between;
+    z-index: 1100;
+}
+.hamburger span {
+    display: block;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+.hamburger.active span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 70vw;
+    max-width: 320px;
+    background: #fff;
+    box-shadow: -2px 0 12px rgba(0,0,0,0.12);
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    z-index: 1050;
+    transition: right 0.3s;
+}
+.mobile-menu.active {
+    display: flex;
+}
+.mobile-menu a {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+}
+.mobile-menu a:last-child {
+    margin-bottom: 0;
+}
+
+/* 섹션 fade-in 효과 */
+section {
+    opacity: 1;
+    transform: none;
+}
+
+/* 카드 및 버튼 효과 개선 */
+.webapp-item, .portfolio-item {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    border-radius: 16px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+.webapp-item:hover, .portfolio-item:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+}
+.webapp-link {
+    font-size: 1.1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+}
+
+/* Hero 타이틀 애니메이션 */
+.hero-content h1 {
+    animation: fadeInDown 1.2s cubic-bezier(.77,0,.18,1) 0.2s both;
+}
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 모바일 반응형 개선 */
+@media (max-width: 900px) {
+    .skills-content, .portfolio-grid, .webapps-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+}
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .hamburger {
+        display: flex;
+    }
+    .mobile-menu {
+        display: none;
+    }
+    section {
+        padding: 1.3rem 0.3rem;
+    }
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+    .webapp-item, .portfolio-item {
+        padding: 1.2rem 0.7rem;
+    }
+}
+
+/* 섹션별 알록달록 배경색 */
+.about {
+    background: linear-gradient(135deg, #f9e7fe 0%, #e0f7fa 100%);
+}
+.skills {
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffe0e3 100%);
+}
+.webapps {
+    background: linear-gradient(135deg, #fffde7 0%, #e1f5fe 100%);
+}
+.portfolio {
+    background: linear-gradient(135deg, #e1f5fe 0%, #fce4ec 100%);
+}
+.contact {
+    background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 100%);
+}
+
+/* 섹션 간격 더 좁게 */
+section {
+    padding: 2.5rem 0.7rem;
+}
+@media (max-width: 768px) {
+    section {
+        padding: 1.3rem 0.3rem;
+    }
 } 

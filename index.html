@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body onload="fadeInSections()">
     <!-- 네비게이션 -->
     <nav class="navbar">
         <div class="nav-content">
@@ -16,9 +16,21 @@
                 <li><a href="#home">HOME</a></li>
                 <li><a href="#about">ABOUT ME</a></li>
                 <li><a href="#skills">SKILLS</a></li>
-                <li><a href="#portfolio">PORTFOLIO</a></li>
+                <li><a href="#webapps">PORTFOLIO</a></li>
                 <li><a href="#contact">CONTACT</a></li>
             </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home">HOME</a>
+            <a href="#about">ABOUT ME</a>
+            <a href="#skills">SKILLS</a>
+            <a href="#webapps">PORTFOLIO</a>
+            <a href="#contact">CONTACT</a>
         </div>
     </nav>
 
@@ -138,5 +150,35 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script>
+      // Fade-in 애니메이션
+      function fadeInSections() {
+        const sections = document.querySelectorAll('section');
+        sections.forEach((section, idx) => {
+          section.style.opacity = 0;
+          section.style.transform = 'translateY(40px)';
+          setTimeout(() => {
+            section.style.transition = 'opacity 0.8s, transform 0.8s';
+            section.style.opacity = 1;
+            section.style.transform = 'translateY(0)';
+          }, 200 + idx * 200);
+        });
+      }
+      // 햄버거 메뉴 동작
+      document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', function() {
+          mobileMenu.classList.toggle('active');
+          hamburger.classList.toggle('active');
+        });
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+          });
+        });
+      });
+    </script>
 </body>
 </html> 
