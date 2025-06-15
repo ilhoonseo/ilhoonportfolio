@@ -286,4 +286,46 @@ img {
 
 .award {
     text-align: center;
+}
+
+/* 내가 만든 웹 어플리케이션 섹션 */
+.webapps-grid {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.webapp-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.webapp-item:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.13);
+}
+
+.webapp-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.7rem 1.5rem;
+    background: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.webapp-link:hover {
+    background: #0056b3;
 } 
