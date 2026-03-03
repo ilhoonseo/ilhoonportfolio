@@ -147,7 +147,7 @@ section h2 {
 
 .profile-info li::before {
     content: attr(data-label);
-    min-width: 70px;
+    min-width: 50px;
     font-weight: bold;
     display: inline-block;
 }
