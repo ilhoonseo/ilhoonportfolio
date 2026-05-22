@@ -851,7 +851,7 @@ footer p {
     }
     
     section {
-        padding: 5rem 1.5rem;
+        padding: 4rem 1rem;
     }
     section h2 {
         font-size: 2.4rem;
@@ -868,20 +868,23 @@ footer p {
     .profile {
         flex-direction: column;
         text-align: center;
-        padding: 2rem;
+        padding: 1.5rem 1rem;
     }
     .profile-image {
         width: 160px;
         height: 160px;
     }
     .profile-info li {
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 1.2rem;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 0.8rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
     }
     .profile-info li::before {
         min-width: unset;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0;
+        margin-right: 0.5rem;
     }
     
     .skills-content, .webapps-grid, .portfolio-grid {

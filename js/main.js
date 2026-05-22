@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------
     const typingSpan = document.querySelector('.typing-text');
     if (typingSpan) {
-        const phrases = ["AI 융합 교육 전문가", "EDUCATOR", "SOFTWARE DEVELOPER", "INNOVATIVE CREATOR"];
+        const phrases = ["EDUCATOR", "SOFTWARE DEVELOPER", "INNOVATIVE CREATOR"];
         let phraseIdx = 0;
         let charIdx = 0;
         let isDeleting = false;
