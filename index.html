@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
+    <title>서일훈 | Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body onload="fadeInSections()">
+<body>
+    <!-- 스크롤 진행 상황 표시 바 -->
+    <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+
+    <!-- PC 전용 커스텀 마우스 커서 -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="custom-cursor-follower" id="customCursorFollower"></div>
+
     <!-- 네비게이션 -->
     <nav class="navbar">
         <div class="nav-content">
-            <div class="logo">PORTFOLIO</div>
+            <div class="logo"><i class="fa-solid fa-code" style="margin-right: 8px;"></i>PORTFOLIO</div>
             <ul class="nav-links">
                 <li><a href="#home">HOME</a></li>
                 <li><a href="#about">ABOUT ME</a></li>
@@ -34,11 +41,15 @@
         </div>
     </nav>
 
-    <!-- 메인 섹션 -->
+    <!-- 히어로 섹션 (메인) -->
     <section id="home" class="hero">
+        <!-- 입자 배경 캔버스 -->
+        <canvas id="hero-canvas"></canvas>
         <div class="hero-content">
-            <h1><br>ILHOON PORTFOLIO</h1>
-            <p>EDUCATOR</p>
+            <h1>ILHOON PORTFOLIO</h1>
+            <p class="hero-subtitle">
+                I AM A <span class="typing-text"></span>
+            </p>
         </div>
     </section>
 
@@ -91,56 +102,58 @@
         <h2>Portfolio</h2>
         <div class="webapps-grid">
             <div class="webapp-item">
-                <h3>오늘의 아침활동</h3>
-                <p>학생들이 아침활동에 할 수 있는 웹어플리케이션</p>
+                <div>
+                    <h3>오늘의 아침활동</h3>
+                    <p>학생들이 아침활동에 할 수 있는 웹 어플리케이션입니다. 교육 현장에서 매일 아침 아이들이 흥미로운 활동을 통해 하루를 열 수 있도록 설계되었습니다.</p>
+                </div>
                 <a href="https://todaysact.vercel.app/" target="_blank" class="webapp-link">바로가기</a>
             </div>
             <div class="webapp-item">
-                <h3>교사용 문자 생성 챗봇</h3>
-                <p>교사가 안내문/문자 메시지를 쉽게 생성해주는 AI 챗봇</p>
+                <div>
+                    <h3>교사용 문자 생성 챗봇</h3>
+                    <p>교사가 안내문이나 학부모용 알림 문자 메시지를 인공지능을 활용해 맞춤형으로 손쉽게 생성해주는 스마트한 AI 비서 챗봇 서비스입니다.</p>
+                </div>
                 <a href="https://mmft.vercel.app/" target="_blank" class="webapp-link">바로가기</a>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio 섹션 -->
+    <!-- Portfolio 섹션 (Awards and Honors) -->
     <section id="portfolio" class="portfolio">
         <h2>Awards and Honors</h2>
         <div class="portfolio-grid">
-            <div class="portfolio-item">
-                <img src="images/Awards1.jpg" alt="포트폴리오 1">
+            <div class="portfolio-item" data-award="awards1">
+                <img src="images/Awards1.jpg" alt="2016 전남 모바일 앱 공모전">
                 <div class="portfolio-info">
-                    <h3>2016 전남 모바앨 앱 공모전</h3>
+                    <h3>2016 전남 모바일 앱 공모전</h3>
                     <p>우수상</p>
                 </div>
             </div>
-            <div class="portfolio-item">
-                <img src="images/Awards2.jpg" alt="포트폴리오 2">
+            <div class="portfolio-item" data-award="awards2">
+                <img src="images/Awards2.jpg" alt="2016 소프트웨어 교육 에듀톤">
                 <div class="portfolio-info">
-                    <h3>2016 소트프웨어 교육 에듀톤</h3>
+                    <h3>2016 소프트웨어 교육 에듀톤</h3>
                     <p>동상</p>
                 </div>
             </div>
-            <div class="portfolio-item">
-                <img src="images/Awards3.jpg" alt="포트폴리오 3">
+            <div class="portfolio-item" data-award="awards3">
+                <img src="images/Awards3.jpg" alt="멘사코리아 합격 증서">
                 <div class="portfolio-info">
                     <h3>멘사코리아</h3>
                     <p>2020~</p>
                 </div>
             </div>
 
-            <div class="portfolio-item">
-                <div class="portfolio-info" style="padding-top: 2.5rem; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
-                    <h3 style="margin-bottom: 1rem; color: var(--primary-color);">연구대회 수상 실적</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-color); font-weight: 500;">
-                        • 제18회 디지털교육 연구대회(SW,AI)<br>
-                        도1등급, 전국3등급(2024)
-                    </p>
-                    <p style="font-size: 0.95rem; color: var(--text-color); font-weight: 500;">
-                        • 디지털 활용업무개선 연구대회<br>
-                        도1등급(2025)
-                    </p>
-                </div>
+            <div class="portfolio-item portfolio-card-research">
+                <h3 style="margin-bottom: 1.2rem; color: var(--primary-color);">연구대회 수상 실적</h3>
+                <p style="font-size: 1.05rem; margin-bottom: 0.8rem; color: var(--text-dark); font-weight: 600; line-height: 1.8;">
+                    • 제18회 디지털교육 연구대회(SW,AI)<br>
+                    &nbsp;&nbsp;도1등급, 전국3등급(2024)
+                </p>
+                <p style="font-size: 1.05rem; color: var(--text-dark); font-weight: 600; line-height: 1.8;">
+                    • 디지털 활용업무개선 연구대회<br>
+                    &nbsp;&nbsp;도1등급(2025)
+                </p>
             </div>
         </div>
     </section>
@@ -150,49 +163,32 @@
         <h2>Contact</h2>
         <div class="contact-content">
             <div class="contact-info">
-                <p>Phone: 010-9556-0316 </p>
-                <p>Email: dlfgns0316@naver.com </p>
+                <p><i class="fa-solid fa-phone" style="margin-right: 10px; color: var(--primary-color);"></i> 010-9556-0316</p>
+                <p><i class="fa-solid fa-envelope" style="margin-right: 10px; color: var(--primary-color);"></i> dlfgns0316@naver.com</p>
             </div>
             <div class="social-links">
-                <a href="https://github.com/ilhoonseo"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/ilhoonseo" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
     </section>
+
+    <!-- 수상 상세 정보 모달 (인터랙티브 레이어 팝업) -->
+    <div class="modal" id="awardModal">
+        <div class="modal-content">
+            <span class="modal-close" id="modalClose">&times;</span>
+            <img src="" alt="수상 이미지" class="modal-img" id="modalImg">
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <p class="modal-subtitle" id="modalSubtitle"></p>
+            <div class="modal-description" id="modalDescription"></div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Ilhoon Portfolio. All Rights Reserved.</p>
     </footer>
 
+    <!-- 모든 인터랙티브 스크립트가 담긴 메인 JS 파일 -->
     <script src="js/main.js"></script>
-    <script>
-      function fadeInSections() {
-        const sections = document.querySelectorAll('section');
-        sections.forEach((section, idx) => {
-          section.style.opacity = 0;
-          section.style.transform = 'translateY(40px)';
-          setTimeout(() => {
-            section.style.transition = 'opacity 0.8s, transform 0.8s';
-            section.style.opacity = 1;
-            section.style.transform = 'translateY(0)';
-          }, 200 + idx * 200);
-        });
-      }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
-        hamburger.addEventListener('click', function() {
-          mobileMenu.classList.toggle('active');
-          hamburger.classList.toggle('active');
-        });
-        document.querySelectorAll('.mobile-menu a').forEach(link => {
-          link.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            hamburger.classList.remove('active');
-          });
-        });
-      });
-    </script>
 </body>
 </html>
