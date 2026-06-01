@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>서일훈 | Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -182,6 +183,34 @@
             <h3 class="modal-title" id="modalTitle"></h3>
             <p class="modal-subtitle" id="modalSubtitle"></p>
             <div class="modal-description" id="modalDescription"></div>
+        </div>
+    </div>
+
+    <!-- 테마 셀렉터 위젯 -->
+    <div class="theme-switcher-widget" id="themeSwitcherWidget">
+        <button class="theme-switcher-toggle" id="themeSwitcherToggle" aria-label="테마 변경">
+            <i class="fa-solid fa-palette"></i>
+        </button>
+        <div class="theme-switcher-menu" id="themeSwitcherMenu">
+            <h4>💡 테마 변경</h4>
+            <div class="theme-options">
+                <button class="theme-option-btn" data-theme="theme-glass" title="네오 글래스모피즘">
+                    <span class="color-dot" style="background: linear-gradient(135deg, #4f46e5, #06b6d4);"></span> 글래스
+                </button>
+                <button class="theme-option-btn" data-theme="theme-cyber" title="일렉트로 사이버펑크">
+                    <span class="color-dot" style="background: linear-gradient(135deg, #ff007f, #00f0ff);"></span> 사이버
+                </button>
+                <button class="theme-option-btn" data-theme="theme-brutalist" title="네오 브루탈리즘">
+                    <span class="color-dot" style="background: linear-gradient(135deg, #000, #fef08a);"></span> 브루탈
+                </button>
+                <button class="theme-option-btn" data-theme="theme-terminal" title="해커 터미널">
+                    <span class="color-dot" style="background: linear-gradient(135deg, #0d0e12, #00ff66);"></span> 터미널
+                </button>
+                <button class="theme-option-btn" data-theme="theme-minimal" title="프리미엄 세리프">
+                    <span class="color-dot" style="background: linear-gradient(135deg, #8c6239, #f5f2eb);"></span> 세리프
+                </button>
+            </div>
+            <p class="theme-switcher-info">접속할 때마다 새로운 임의의 테마가 자동으로 지정됩니다!</p>
         </div>
     </div>
 

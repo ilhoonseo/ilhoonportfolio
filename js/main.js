@@ -1,5 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------
+    // 0. 테마 관리 시스템 (접속 시 무작위 테마 선택 및 수동 변경 지원)
+    // ---------------------------------------------
+    const themes = ['theme-glass', 'theme-cyber', 'theme-brutalist', 'theme-terminal', 'theme-minimal'];
+    
+    // 접속할 때마다 다른 테마를 경험할 수 있도록 무작위 배정을 기본값으로 설정하되,
+    // 테마 셀렉터로 직접 변경한 경우 해당 세션 동안은 고정되도록 sessionStorage 적용
+    let activeTheme = sessionStorage.getItem('selected-portfolio-theme');
+    
+    if (!activeTheme || !themes.includes(activeTheme)) {
+        const randomIndex = Math.floor(Math.random() * themes.length);
+        activeTheme = themes[randomIndex];
+    }
+    
+    // body 태그에 테마 클래스 적용
+    document.body.className = activeTheme;
+
+    // 테마 셀렉터 버튼들의 active 상태 업데이트 함수
+    function updateThemeSelectorUI(themeName) {
+        document.querySelectorAll('.theme-option-btn').forEach(btn => {
+            if (btn.getAttribute('data-theme') === themeName) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    updateThemeSelectorUI(activeTheme);
+
+    // 테마 셀렉터 위젯 토글 & 테마 변경 바인딩
+    const themeWidget = document.getElementById('themeSwitcherWidget');
+    const themeToggle = document.getElementById('themeSwitcherToggle');
+    if (themeToggle && themeWidget) {
+        themeToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeWidget.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (themeWidget.classList.contains('active') && !themeWidget.contains(e.target)) {
+                themeWidget.classList.remove('active');
+            }
+        });
+    }
+
+    document.querySelectorAll('.theme-option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const selectedTheme = btn.getAttribute('data-theme');
+            if (themes.includes(selectedTheme)) {
+                document.body.className = selectedTheme;
+                sessionStorage.setItem('selected-portfolio-theme', selectedTheme);
+                updateThemeSelectorUI(selectedTheme);
+            }
+        });
+    });
+
+    // ---------------------------------------------
     // 1. 공통 상수 및 요소 셀렉터
     // ---------------------------------------------
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 1024;
@@ -175,6 +232,28 @@ document.addEventListener('DOMContentLoaded', () => {
         let particles = [];
         let mouse = { x: null, y: null, radius: 120 };
 
+        // 테마의 메인 색상(--primary-color)을 실시간으로 가져와 RGBA 형태로 변환하는 헬퍼 함수
+        function getPrimaryColorRGBA(alpha) {
+            const primaryColor = getComputedStyle(document.body).getPropertyValue('--primary-color').trim() || '#4f46e5';
+            if (primaryColor.startsWith('#')) {
+                let r, g, b;
+                const hex = primaryColor.replace('#', '');
+                if (hex.length === 3) {
+                    r = parseInt(hex[0] + hex[0], 16);
+                    g = parseInt(hex[1] + hex[1], 16);
+                    b = parseInt(hex[2] + hex[2], 16);
+                } else if (hex.length === 6) {
+                    r = parseInt(hex.substring(0, 2), 16);
+                    g = parseInt(hex.substring(2, 4), 16);
+                    b = parseInt(hex.substring(4, 6), 16);
+                } else {
+                    r = 79; g = 70; b = 229;
+                }
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+            return primaryColor;
+        }
+
         // 윈도우 크기에 캔버스 맞추기 (고해상도 디스플레이 대응 포함)
         function resizeCanvas() {
             const dpi = window.devicePixelRatio || 1;
@@ -199,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             draw() {
-                ctx.fillStyle = 'rgba(79, 70, 229, 0.4)';
+                ctx.fillStyle = getPrimaryColorRGBA(0.4);
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.closePath();
@@ -251,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (distance < 120) {
                         let alpha = (1 - (distance / 120)) * 0.15;
-                        ctx.strokeStyle = `rgba(79, 70, 229, ${alpha})`;
+                        ctx.strokeStyle = getPrimaryColorRGBA(alpha);
                         ctx.lineWidth = 1;
                         ctx.beginPath();
                         ctx.moveTo(particles[a].x, particles[a].y);
