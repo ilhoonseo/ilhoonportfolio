@@ -72,10 +72,6 @@
     color: transparent;
 }
 
-[data-theme="liquid"] .stat-1 .stat-num { color: #0a84ff; }
-[data-theme="liquid"] .stat-2 .stat-num { color: #bf5af2; }
-[data-theme="liquid"] .stat-3 .stat-num { color: #ff375f; }
-
 [data-theme="liquid"] .modal-content {
     -webkit-backdrop-filter: blur(30px) saturate(180%);
     backdrop-filter: blur(30px) saturate(180%);
@@ -145,13 +141,6 @@
 [data-theme="aurora"] .section-title em,
 [data-theme="aurora"] .contact-title em {
     background: linear-gradient(90deg, #c4b5fd, #8b5cf6 40%, #22d3ee);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-[data-theme="aurora"] .stat-num {
-    background: linear-gradient(180deg, #ffffff, #8e90a2);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -306,18 +295,6 @@
     border: none;
 }
 
-[data-theme="editorial"] .stat-1 {
-    background: var(--accent);
-}
-
-[data-theme="editorial"] .stat-1 .stat-label {
-    color: #111;
-}
-
-[data-theme="editorial"] .stat-1:hover {
-    background-color: var(--accent);
-}
-
 [data-theme="editorial"] .timeline li::before {
     border-radius: 0;
     border-color: #111;
@@ -406,9 +383,6 @@
 }
 
 /* 타일마다 다른 파스텔 색 */
-[data-theme="clay"] .stat-1         { background: #ffe1d6; }
-[data-theme="clay"] .stat-2         { background: #d7f5e9; }
-[data-theme="clay"] .stat-3         { background: #fff1bf; }
 [data-theme="clay"] .tile-edu       { background: #ebe5ff; }
 [data-theme="clay"] .skill-card     { background: #dff0ff; }
 [data-theme="clay"] .skill-card-wide { background: #ffffff; }
@@ -456,10 +430,6 @@
 
 [data-theme="clay"] .btn:hover {
     transform: translateY(-3px) scale(1.03);
-}
-
-[data-theme="clay"] .stat-num {
-    color: var(--text);
 }
 
 [data-theme="clay"] .marquee {
@@ -556,8 +526,7 @@
 }
 
 /* 크롬(메탈) 질감 텍스트 */
-[data-theme="acid"] .hero-line:first-child,
-[data-theme="acid"] .stat-num {
+[data-theme="acid"] .hero-line:first-child {
     background: linear-gradient(180deg, #ffffff 0%, #d9d9d9 35%, #5f5f5f 52%, #f0f0f0 68%, #9a9a9a 100%);
     -webkit-background-clip: text;
     background-clip: text;
