@@ -416,21 +416,6 @@ button {
     gap: 1.6rem;
 }
 
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.5rem 0.95rem;
-    border-radius: var(--chip-radius);
-    background: var(--chip-bg);
-    border: 1px solid var(--border);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-}
-
 .hero-title {
     font-family: var(--font-display);
     font-size: var(--hero-size);

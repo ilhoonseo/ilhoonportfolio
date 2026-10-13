@@ -150,12 +150,6 @@
     color: transparent;
 }
 
-[data-theme="aurora"] .hero-badge {
-    border-color: rgba(167, 139, 250, 0.3);
-    background: rgba(139, 92, 246, 0.08);
-    color: #c4b5fd;
-}
-
 [data-theme="aurora"] .stat-num {
     background: linear-gradient(180deg, #ffffff, #8e90a2);
     -webkit-background-clip: text;
@@ -259,15 +253,6 @@
     text-transform: none;
     letter-spacing: -0.01em;
     color: var(--accent);
-}
-
-[data-theme="editorial"] .hero-badge {
-    background: transparent;
-    border-color: #111;
-    color: #111;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 0.75rem;
 }
 
 [data-theme="editorial"] .section-head {
@@ -450,7 +435,6 @@
     margin-top: 0.08em;
 }
 
-[data-theme="clay"] .hero-badge,
 [data-theme="clay"] .chip,
 [data-theme="clay"] .skill-list li,
 [data-theme="clay"] .research-list li,
@@ -557,7 +541,6 @@
 }
 
 [data-theme="acid"] .logo-text,
-[data-theme="acid"] .hero-badge,
 [data-theme="acid"] .btn {
     font-family: var(--font-mono);
 }
@@ -566,12 +549,6 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     font-size: 0.88rem;
-}
-
-[data-theme="acid"] .hero-badge {
-    border-color: rgba(212, 255, 58, 0.4);
-    color: #d4ff3a;
-    font-size: 0.78rem;
 }
 
 [data-theme="acid"] .pulse-dot {
