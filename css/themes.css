@@ -1,695 +1,680 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Share+Tech+Mono&display=swap');
+/* ==========================================================================
+   5가지 테마
+   <html data-theme="..."> 값에 따라 style.css 의 변수를 바꿔 끼운다.
+   ========================================================================== */
+
 
 /* ==========================================================================
-   [테마 1] 네오 글래스모피즘 (Default Premium Glass)
+   [테마 1] 리퀴드 글래스 — 비비드한 빛 번짐 위에 떠 있는 반투명 유리
    ========================================================================== */
-.theme-glass {
-    --primary-color: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary-color: #06b6d4;
-    --secondary-light: #22d3ee;
-    --accent-color: #ec4899;
-    --text-dark: #0f172a;
-    --text-muted: #475569;
-    --bg-light: #f8fafc;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    --hover-shadow: 0 20px 40px rgba(79, 70, 229, 0.12);
+[data-theme="liquid"] {
+    color-scheme: light;
+    --bg: #eef1f8;
+    --text: #0b1020;
+    --text-muted: #4a5368;
+    --text-faint: #7a8296;
+    --accent: #0a84ff;
+    --accent-text: #0a6ee0;
+    --on-accent: #ffffff;
+    --surface: rgba(255, 255, 255, 0.36);
+    --surface-solid: rgba(250, 251, 255, 0.96);
+    --border: rgba(255, 255, 255, 0.7);
+    --border-strong: rgba(15, 23, 42, 0.14);
+    --chip-bg: rgba(255, 255, 255, 0.45);
+    --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(255, 255, 255, 0.25), 0 12px 32px -10px rgba(30, 41, 90, 0.2);
+    --shadow-hover: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(255, 255, 255, 0.3), 0 26px 50px -14px rgba(30, 41, 90, 0.3);
+    --tile-filter: blur(22px) saturate(180%);
+    --radius: 28px;
+    --radius-sm: 18px;
+    --icon-bg: linear-gradient(135deg, #0a84ff, #5e5ce6);
+    --btn-bg: rgba(11, 16, 32, 0.9);
+    --btn-fg: #ffffff;
+    --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 10px 24px -8px rgba(11, 16, 32, 0.45);
+    --ghost-bg: rgba(255, 255, 255, 0.45);
+    --nav-bg: rgba(255, 255, 255, 0.42);
+    --nav-border: rgba(255, 255, 255, 0.75);
+    --nav-hover: rgba(255, 255, 255, 0.5);
+    --nav-active: rgba(255, 255, 255, 0.92);
+    --nav-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 10px 30px -12px rgba(30, 41, 90, 0.25);
+    --spot: rgba(255, 255, 255, 0.6);
+    --progress: linear-gradient(90deg, #0a84ff, #bf5af2, #ff375f);
+    --modal-scrim: rgba(30, 41, 90, 0.25);
+    --blob-opacity: 0.8;
+    --blob-blur: 70px;
+    --blob-1: #8fb8ff;
+    --blob-2: #ff9fd4;
+    --blob-3: #8ef0dc;
+    --grain-opacity: 0.05;
 }
 
-/* ==========================================================================
-   [테마 2] 사이버펑크 네온 (Neon Cyberpunk Dark)
-   ========================================================================== */
-.theme-cyber {
-    --primary-color: #ff007f;       /* 네온 핑크 */
-    --primary-light: #ff66b2;
-    --secondary-color: #00f0ff;     /* 네온 시안 */
-    --secondary-light: #66f5ff;
-    --accent-color: #39ff14;        /* 네온 그린 */
-    --text-dark: #f8fafc;
-    --text-muted: #94a3b8;
-    --bg-light: #06070d;            /* 딥 블랙 */
-    --glass-bg: rgba(15, 16, 28, 0.85);
-    --glass-border: rgba(0, 240, 255, 0.2);
-    --card-shadow: 0 0 15px rgba(255, 0, 127, 0.15);
-    --hover-shadow: 0 0 30px rgba(0, 240, 255, 0.35);
+/* 유리 윗면의 반사광 */
+[data-theme="liquid"] .tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(140deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 42%);
+    pointer-events: none;
 }
 
-.theme-cyber body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-}
-
-.theme-cyber .navbar {
-    background: rgba(6, 7, 13, 0.85) !important;
-    border-bottom: 1px solid rgba(255, 0, 127, 0.3) !important;
-}
-
-.theme-cyber .navbar.scrolled {
-    background: rgba(6, 7, 13, 0.95) !important;
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15) !important;
-}
-
-/* 섹션 별 배경 어둡게 설정 */
-.theme-cyber section,
-.theme-cyber .about,
-.theme-cyber .skills,
-.theme-cyber .webapps,
-.theme-cyber .portfolio,
-.theme-cyber .contact {
-    background: #090b11 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.theme-cyber .hero {
-    background: linear-gradient(185deg, #06070d 0%, #11091a 100%) !important;
-}
-
-/* 카드 및 상자 테두리 네온 글로우 */
-.theme-cyber .webapp-item,
-.theme-cyber .portfolio-item,
-.theme-cyber .skill-category,
-.theme-cyber .modal-content {
-    background: var(--glass-bg) !important;
-    border: 1px solid rgba(0, 240, 255, 0.25) !important;
-    box-shadow: var(--card-shadow) !important;
-    color: #fff;
-}
-
-.theme-cyber .webapp-item:hover,
-.theme-cyber .portfolio-item:hover,
-.theme-cyber .skill-category:hover {
-    border-color: var(--primary-color) !important;
-    box-shadow: var(--hover-shadow) !important;
-}
-
-.theme-cyber .webapp-link {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
-    box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-    color: #fff !important;
-}
-
-.theme-cyber .webapp-link:hover {
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-}
-
-.theme-cyber section h2 {
-    text-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
-}
-
-.theme-cyber .profile-info ul li::before {
-    color: var(--secondary-color) !important;
-}
-
-.theme-cyber footer {
-    background: #06070d;
-    border-top: 1px solid rgba(255, 0, 127, 0.2);
-    color: var(--text-muted);
-}
-
-/* ==========================================================================
-   [테마 3] 네오 브루탈리즘 (Bold Neo-Brutalist)
-   ========================================================================== */
-.theme-brutalist {
-    --primary-color: #000000;
-    --primary-light: #222222;
-    --secondary-color: #ff3e3e;     /* 강렬한 레드 */
-    --secondary-light: #ff6666;
-    --accent-color: #ffde43;        /* 옐로우 포인트 */
-    --text-dark: #000000;
-    --text-muted: #2d3748;
-    --bg-light: #fffcf0;            /* 부드러운 웜 화이트 */
-    --glass-bg: #ffffff;
-    --glass-border: #000000;
-    --card-shadow: 8px 8px 0px #000000;
-    --hover-shadow: 14px 14px 0px #000000;
-}
-
-.theme-brutalist body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-}
-
-/* 플랫하고 굵은 테두리 */
-.theme-brutalist .navbar {
-    background: #ffffff !important;
-    border-bottom: 4px solid #000000 !important;
-    box-shadow: none !important;
-}
-
-.theme-brutalist .navbar.scrolled {
-    padding: 0.5rem 0 !important;
-}
-
-/* 각 섹션 플랫한 비비드 파스텔 컬러 */
-.theme-brutalist .hero {
-    background: #ffd60a !important; /* 강렬한 노랑 */
-    border-bottom: 4px solid #000000;
-}
-
-.theme-brutalist .about {
-    background: #f472b6 !important; /* 러블리 핑크 */
-    border-bottom: 4px solid #000000;
-}
-
-.theme-brutalist .skills {
-    background: #38bdf8 !important; /* 비비드 스카이블루 */
-    border-bottom: 4px solid #000000;
-}
-
-.theme-brutalist .webapps {
-    background: #fb923c !important; /* 비비드 오렌지 */
-    border-bottom: 4px solid #000000;
-}
-
-.theme-brutalist .portfolio {
-    background: #c084fc !important; /* 비비드 퍼플 */
-    border-bottom: 4px solid #000000;
-}
-
-.theme-brutalist .contact {
-    background: #4ade80 !important; /* 비비드 그린 */
-}
-
-/* 카드 및 박스 브루탈리즘 스타일 */
-.theme-brutalist .webapp-item,
-.theme-brutalist .portfolio-item,
-.theme-brutalist .skill-category,
-.theme-brutalist .modal-content,
-.theme-brutalist .profile-image {
-    background: #ffffff !important;
-    border: 3px solid #000000 !important;
-    border-radius: 0px !important;
-    box-shadow: var(--card-shadow) !important;
-    color: #000000 !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-.theme-brutalist .webapp-item:hover,
-.theme-brutalist .portfolio-item:hover,
-.theme-brutalist .skill-category:hover {
-    transform: translate(-6px, -6px) !important;
-    box-shadow: var(--hover-shadow) !important;
-}
-
-/* 타이핑 텍스트 뒷배경 형광펜 효과 */
-.theme-brutalist .typing-text {
-    background: #000000 !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: #ffd60a !important;
-    color: #ffd60a !important;
-    padding: 0 10px;
-    border-right: 4px solid #000000 !important;
-}
-
-.theme-brutalist section h2 {
-    font-size: 3.5rem !important;
-    text-transform: uppercase;
-    color: #000000;
-    -webkit-text-stroke: 1px #000000;
-}
-
-.theme-brutalist section h2::after {
-    display: none; /* 밑줄 제거 */
-}
-
-.theme-brutalist .webapp-link {
-    background: #000000 !important;
-    color: #ffffff !important;
-    border: 2px solid #000000 !important;
-    border-radius: 0px !important;
-    font-weight: 900 !important;
-    box-shadow: 4px 4px 0px #ff3e3e !important;
-}
-
-.theme-brutalist .webapp-link:hover {
-    background: #ff3e3e !important;
-    color: #000000 !important;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px #000000 !important;
-}
-
-.theme-brutalist footer {
-    background: #000000;
-    color: #ffffff;
-    border-top: 4px solid #000000;
-}
-
-.theme-brutalist .logo {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: #000000 !important;
-    color: #000000 !important;
-    font-weight: 900;
-}
-
-.theme-brutalist .profile-info ul li {
-    font-weight: 700;
-}
-
-/* ==========================================================================
-   [테마 4] 해커 터미널 (Retro Hacker Terminal)
-   ========================================================================== */
-.theme-terminal {
-    --primary-color: #00ff66;       /* 터미널 네온 그린 */
-    --primary-light: #66ff99;
-    --secondary-color: #00cc44;
-    --secondary-light: #33ff88;
-    --accent-color: #00e5ff;
-    --text-dark: #00ff66;
-    --text-muted: #008833;
-    --bg-light: #08090c;
-    --glass-bg: #0f111a;
-    --glass-border: #00ff66;
-    --card-shadow: 0 0 10px rgba(0, 255, 102, 0.15);
-    --hover-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
-}
-
-.theme-terminal * {
-    font-family: 'Share Tech Mono', 'Fira Code', 'Courier New', monospace !important;
-}
-
-.theme-terminal body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-    /* CRT 모니터 미세 스캔라인 효과 */
-    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-    background-size: 100% 4px;
-}
-
-.theme-terminal .navbar {
-    background: rgba(8, 9, 12, 0.95) !important;
-    border-bottom: 2px solid var(--primary-color) !important;
-}
-
-.theme-terminal .nav-links a {
-    color: var(--text-dark) !important;
-}
-
-.theme-terminal .nav-links a::before {
-    content: "$ ";
-    color: var(--accent-color);
-}
-
-/* 섹션 스타일 */
-.theme-terminal section,
-.theme-terminal .about,
-.theme-terminal .skills,
-.theme-terminal .webapps,
-.theme-terminal .portfolio,
-.theme-terminal .contact {
-    background: #0b0c10 !important;
-    border-bottom: 1px dashed var(--primary-color);
-}
-
-.theme-terminal .hero {
-    background: #08090c !important;
-}
-
-/* 터미널 프롬프트 느낌의 제목 */
-.theme-terminal section h2::before {
-    content: "guest@ilhoon-portfolio:~# ";
-    color: var(--accent-color);
-    font-size: 1.8rem;
-    font-weight: normal;
-}
-
-.theme-terminal section h2 {
-    font-size: 2.2rem !important;
-    text-align: left !important;
-    max-width: 1000px;
-    margin: 0 auto 3rem auto !important;
-}
-
-.theme-terminal section h2::after {
+[data-theme="liquid"] .tile-photo::after,
+[data-theme="liquid"] .award-card::after {
     display: none;
 }
 
-/* 카드 및 박스 터미널 UI 스타일 */
-.theme-terminal .webapp-item,
-.theme-terminal .portfolio-item,
-.theme-terminal .skill-category,
-.theme-terminal .modal-content {
-    background: #0d0f14 !important;
-    border: 2px solid var(--primary-color) !important;
-    border-radius: 4px !important;
-    box-shadow: var(--card-shadow) !important;
-    color: var(--primary-color) !important;
+[data-theme="liquid"] .hero-title em,
+[data-theme="liquid"] .section-title em,
+[data-theme="liquid"] .contact-title em {
+    background: linear-gradient(100deg, #0a84ff, #bf5af2 50%, #ff375f);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.theme-terminal .webapp-item:hover,
-.theme-terminal .portfolio-item:hover,
-.theme-terminal .skill-category:hover {
-    box-shadow: var(--hover-shadow) !important;
-    background: #111622 !important;
-}
+[data-theme="liquid"] .stat-1 .stat-num { color: #0a84ff; }
+[data-theme="liquid"] .stat-2 .stat-num { color: #bf5af2; }
+[data-theme="liquid"] .stat-3 .stat-num { color: #ff375f; }
 
-.theme-terminal .webapp-link {
-    background: transparent !important;
-    border: 2px solid var(--primary-color) !important;
-    color: var(--primary-color) !important;
-    border-radius: 4px !important;
-}
-
-.theme-terminal .webapp-link:hover {
-    background: var(--primary-color) !important;
-    color: #000000 !important;
-    box-shadow: 0 0 15px var(--primary-color);
-}
-
-.theme-terminal .logo {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-}
-
-.theme-terminal .logo::before {
-    content: "[SYS] ";
-    color: var(--accent-color);
-}
-
-.theme-terminal .profile-image {
-    border: 3px solid var(--primary-color) !important;
-    border-radius: 8px !important;
-    overflow: hidden;
-    filter: grayscale(100%) contrast(150%) brightness(90%);
-}
-
-.theme-terminal .profile-info h3::before {
-    content: "> ";
-}
-
-.theme-terminal .profile-info ul li {
-    font-weight: 500;
-}
-
-.theme-terminal .profile-info ul li::before {
-    content: "- " !important;
-    color: var(--accent-color) !important;
-}
-
-.theme-terminal .typing-text {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-    text-shadow: 0 0 5px var(--primary-color);
-}
-
-.theme-terminal footer {
-    background: #08090c;
-    border-top: 2px solid var(--primary-color);
-    color: var(--text-muted);
-}
-
-/* ==========================================================================
-   [테마 5] 에디토리얼 프리미엄 세리프 (Warm Luxury Serif)
-   ========================================================================== */
-.theme-minimal {
-    --primary-color: #8c6239;       /* 테라코타 및 앤틱 골드 */
-    --primary-light: #b38b6d;
-    --secondary-color: #4a5a4b;     /* 클래식 세이지 그린 */
-    --secondary-light: #6f8570;
-    --accent-color: #c07a3c;
-    --text-dark: #2c2724;           /* 부드러운 다크 브라운 */
-    --text-muted: #6b645f;
-    --bg-light: #f6f3eb;            /* 앤틱 오트밀 베이지 */
-    --glass-bg: #ffffff;
-    --glass-border: rgba(140, 98, 57, 0.15);
-    --card-shadow: 0 10px 40px rgba(140, 98, 57, 0.04);
-    --hover-shadow: 0 25px 60px rgba(140, 98, 57, 0.09);
-}
-
-.theme-minimal * {
-    font-family: 'Playfair Display', 'Noto Serif KR', serif !important;
-}
-
-.theme-minimal body {
-    background-color: var(--bg-light);
-    color: var(--text-dark);
-}
-
-.theme-minimal .navbar {
-    background: rgba(246, 243, 235, 0.9) !important;
-    border-bottom: 1px solid rgba(140, 98, 57, 0.12) !important;
-}
-
-/* 섹션 세련된 웜톤 배치 */
-.theme-minimal section,
-.theme-minimal .about,
-.theme-minimal .skills,
-.theme-minimal .webapps,
-.theme-minimal .portfolio,
-.theme-minimal .contact {
-    background: #fbf9f6 !important;
-    border-bottom: 1px solid rgba(140, 98, 57, 0.08);
-}
-
-.theme-minimal .about {
-    background: #f6f3eb !important;
-}
-
-.theme-minimal .webapps {
-    background: #f1ede4 !important;
-}
-
-.theme-minimal .portfolio {
-    background: #fbf9f6 !important;
-}
-
-.theme-minimal .hero {
-    background: linear-gradient(180deg, #fbf9f6 0%, #f6f3eb 100%) !important;
-}
-
-/* 카드 및 이미지 미니멀 고급화 */
-.theme-minimal .webapp-item,
-.theme-minimal .portfolio-item,
-.theme-minimal .skill-category,
-.theme-minimal .modal-content {
-    background: #ffffff !important;
-    border: 1px solid rgba(140, 98, 57, 0.18) !important;
-    border-radius: 4px !important;
-    box-shadow: var(--card-shadow) !important;
-    color: var(--text-dark) !important;
-}
-
-.theme-minimal .webapp-item:hover,
-.theme-minimal .portfolio-item:hover,
-.theme-minimal .skill-category:hover {
-    box-shadow: var(--hover-shadow) !important;
-    transform: translateY(-4px);
-    border-color: var(--primary-color) !important;
-}
-
-.theme-minimal .profile-image {
-    border-radius: 200px 200px 0 0 !important; /* 에디토리얼 아치형 프로필 */
-    border: 1px solid var(--primary-color);
-    padding: 8px;
-    background: #fff;
-}
-
-.theme-minimal section h2 {
-    font-size: 2.8rem !important;
-    font-style: italic;
-    font-weight: 700;
-}
-
-.theme-minimal section h2::after {
-    height: 1px;
-    background: var(--primary-color);
-    width: 100px;
-}
-
-.theme-minimal .logo {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-    font-style: italic;
-    font-weight: 700;
-}
-
-.theme-minimal .webapp-link {
-    background: var(--primary-color) !important;
-    color: #ffffff !important;
-    border-radius: 2px !important;
-}
-
-.theme-minimal .webapp-link:hover {
-    background: var(--secondary-color) !important;
-}
-
-.theme-minimal .typing-text {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    -webkit-text-fill-color: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-    font-style: italic;
-}
-
-.theme-minimal footer {
-    background: #2c2724;
-    color: #f6f3eb;
+[data-theme="liquid"] .modal-content {
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
 }
 
 
 /* ==========================================================================
-   💡 Floating Theme Switcher Widget UI (세련된 플로팅 테마 매니저)
+   [테마 2] 오로라 나이트 — 어두운 바탕, 오로라 빛, 마우스 스포트라이트
    ========================================================================== */
-.theme-switcher-widget {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-family: 'Outfit', 'Noto Sans KR', sans-serif !important;
+[data-theme="aurora"] {
+    color-scheme: dark;
+    --font-subtitle: var(--font-mono);
+    --bg: #060609;
+    --text: #ededf2;
+    --text-muted: #9a9cab;
+    --text-faint: #686a7a;
+    --accent: #8b5cf6;
+    --accent-text: #a78bfa;
+    --on-accent: #ffffff;
+    --surface: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+    --surface-solid: #101016;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --border-hover: rgba(167, 139, 250, 0.4);
+    --chip-bg: rgba(255, 255, 255, 0.04);
+    --shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 20px 40px -24px rgba(0, 0, 0, 0.8);
+    --shadow-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 30px 60px -24px rgba(124, 58, 237, 0.45);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --icon-bg: linear-gradient(135deg, #7c3aed, #2563eb);
+    --btn-bg: #f4f4f6;
+    --btn-fg: #0a0a0f;
+    --btn-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 10px 34px -8px rgba(139, 92, 246, 0.7);
+    --ghost-bg: rgba(255, 255, 255, 0.03);
+    --nav-bg: rgba(14, 14, 20, 0.6);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-hover: rgba(255, 255, 255, 0.06);
+    --nav-active: rgba(255, 255, 255, 0.1);
+    --nav-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+    --spot: rgba(139, 92, 246, 0.2);
+    --progress: linear-gradient(90deg, #8b5cf6, #22d3ee);
+    --modal-scrim: rgba(0, 0, 0, 0.65);
+    --blob-opacity: 0.5;
+    --blob-blur: 100px;
+    --blob-1: #6d28d9;
+    --blob-2: #0e7490;
+    --blob-3: #1d4ed8;
+    --grid-opacity: 1;
+    --grid-color: rgba(255, 255, 255, 0.055);
+    --grain-opacity: 0.06;
 }
 
-.theme-switcher-toggle {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background: #1e1b4b; /* 네이비 다크 */
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    font-size: 1.4rem;
-    cursor: pointer;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+[data-theme="aurora"] .blob-3 {
+    opacity: 0.25;
 }
 
-.theme-switcher-toggle:hover {
-    transform: scale(1.1) rotate(45deg);
-    background: #4f46e5;
-    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
+[data-theme="aurora"] .hero-title,
+[data-theme="aurora"] .section-title,
+[data-theme="aurora"] .contact-title {
+    background: linear-gradient(180deg, #ffffff 25%, #8e90a2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.theme-switcher-widget.active .theme-switcher-toggle {
-    transform: scale(0.95) rotate(-90deg);
-    background: #ef4444;
+[data-theme="aurora"] .hero-title em,
+[data-theme="aurora"] .section-title em,
+[data-theme="aurora"] .contact-title em {
+    background: linear-gradient(90deg, #c4b5fd, #8b5cf6 40%, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.theme-switcher-menu {
-    position: absolute;
-    bottom: 70px;
-    right: 0;
-    width: 260px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 16px;
-    padding: 1.2rem;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+[data-theme="aurora"] .hero-badge {
+    border-color: rgba(167, 139, 250, 0.3);
+    background: rgba(139, 92, 246, 0.08);
+    color: #c4b5fd;
 }
 
-.theme-switcher-widget.active .theme-switcher-menu {
+[data-theme="aurora"] .stat-num {
+    background: linear-gradient(180deg, #ffffff, #8e90a2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+[data-theme="aurora"] .marquee {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+
+/* ==========================================================================
+   [테마 3] 스위스 에디토리얼 — 종이 질감, 거대한 타이포, 오렌지 포인트
+   ========================================================================== */
+[data-theme="editorial"] {
+    color-scheme: light;
+    --font-serif: 'Instrument Serif', 'Noto Serif KR', Georgia, serif;
+    --bg: #f2f0ea;
+    --text: #111111;
+    --text-muted: #4b4a46;
+    --text-faint: #85837c;
+    --accent: #ff4d17;
+    --accent-text: #e2400d;
+    --on-accent: #111111;
+    --surface: transparent;
+    --surface-solid: #f7f5f0;
+    --border: #111111;
+    --border-strong: #111111;
+    --chip-bg: transparent;
+    --shadow: none;
+    --shadow-hover: none;
+    --radius: 0px;
+    --radius-sm: 0px;
+    --radius-btn: 0px;
+    --chip-radius: 0px;
+    --nav-radius: 0px;
+    --display-weight: 900;
+    --display-tracking: -0.055em;
+    --display-case: uppercase;
+    --hero-size: clamp(3.5rem, 19vw, 13rem);
+    --title-size: clamp(2.6rem, 8vw, 5.4rem);
+    --hero-align: left;
+    --hero-items: flex-start;
+    --tile-hover-transform: none;
+    --icon-bg: #111111;
+    --icon-fg: #f2f0ea;
+    --btn-bg: #111111;
+    --btn-fg: #f2f0ea;
+    --ghost-bg: transparent;
+    --nav-bg: rgba(242, 240, 234, 0.92);
+    --nav-border: #111111;
+    --nav-hover: rgba(17, 17, 17, 0.06);
+    --nav-active: #111111;
+    --nav-shadow: none;
+    --progress: #ff4d17;
+    --modal-scrim: rgba(17, 17, 17, 0.45);
+    --grid-opacity: 1;
+    --grain-opacity: 0.05;
+}
+
+/* 6단 컬럼 가이드 라인 */
+[data-theme="editorial"] .bg-grid {
+    background-image: linear-gradient(90deg, rgba(17, 17, 17, 0.07) 1px, transparent 1px);
+    background-size: calc(100% / 6) 100%;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+[data-theme="editorial"] .nav-links a.is-active {
+    color: #f2f0ea;
+}
+
+[data-theme="editorial"] .nav-links a,
+[data-theme="editorial"] .tile-label,
+[data-theme="editorial"] .chip,
+[data-theme="editorial"] .btn {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+[data-theme="editorial"] .btn {
+    font-size: 0.85rem;
+}
+
+[data-theme="editorial"] .btn-primary:hover {
+    background: var(--accent);
+    color: #111;
+}
+
+[data-theme="editorial"] .hero-title {
+    line-height: 0.84;
+}
+
+[data-theme="editorial"] .hero-title em,
+[data-theme="editorial"] .section-title em,
+[data-theme="editorial"] .contact-title em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+}
+
+[data-theme="editorial"] .hero-badge {
+    background: transparent;
+    border-color: #111;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+}
+
+[data-theme="editorial"] .section-head {
+    padding-top: 18px;
+    border-top: 1px solid #111;
+}
+
+[data-theme="editorial"] .section-index {
+    gap: 0;
+    color: #111;
+}
+
+[data-theme="editorial"] .section-index::before {
+    content: '(';
+}
+
+[data-theme="editorial"] .section-index::after {
+    content: ')';
+    width: auto;
+    height: auto;
+    background: none;
     opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
 }
 
-.theme-switcher-menu h4 {
-    margin-bottom: 0.8rem;
-    font-size: 1rem;
-    color: #1f2937;
-    font-weight: 700;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    padding-bottom: 0.5rem;
+[data-theme="editorial"] .marquee {
+    background: #111;
+    border: none;
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
-.theme-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+[data-theme="editorial"] .marquee-track span {
+    color: #f2f0ea;
+    font-weight: 900;
 }
 
-.theme-option-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #4b5563;
-    text-align: left;
-    transition: all 0.2s ease;
+[data-theme="editorial"] .tile:hover {
+    background-color: #ffffff;
 }
 
-.theme-option-btn:hover {
-    background: #f3f4f6;
-    color: #1f2937;
-    transform: translateX(3px);
+[data-theme="editorial"] .tile-photo img {
+    filter: grayscale(1) contrast(1.08);
 }
 
-.theme-option-btn.active {
-    background: #1e1b4b;
-    color: #ffffff;
-    border-color: #1e1b4b;
+[data-theme="editorial"] .tile-photo:hover img {
+    filter: none;
 }
 
-.color-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
+[data-theme="editorial"] .photo-tag {
+    background: #111;
+    border: none;
+}
+
+[data-theme="editorial"] .stat-1 {
+    background: var(--accent);
+}
+
+[data-theme="editorial"] .stat-1 .stat-label {
+    color: #111;
+}
+
+[data-theme="editorial"] .stat-1:hover {
+    background-color: var(--accent);
+}
+
+[data-theme="editorial"] .timeline li::before {
+    border-radius: 0;
+    border-color: #111;
+}
+
+[data-theme="editorial"] .timeline li.is-now::before {
+    background: var(--accent);
+    box-shadow: none;
+}
+
+[data-theme="editorial"] .timeline li::after {
+    background: #111;
+}
+
+[data-theme="editorial"] .research-year {
+    background: var(--accent);
+    color: #111;
+}
+
+[data-theme="editorial"] .award-year {
+    background: #111;
+}
+
+[data-theme="editorial"] .award-card img {
+    filter: grayscale(0.6);
+}
+
+[data-theme="editorial"] .award-card:hover img {
+    filter: none;
+}
+
+[data-theme="editorial"] .modal-close {
+    border-radius: 0;
+}
+
+[data-theme="editorial"] .contact-row:hover .contact-arrow {
+    color: #111;
+}
+
+
+/* ==========================================================================
+   [테마 4] 소프트 클레이 — 말랑한 파스텔 3D, 통통 튀는 인터랙션
+   ========================================================================== */
+[data-theme="clay"] {
+    color-scheme: light;
+    --font-display: 'Fredoka', 'Pretendard Variable', Pretendard, sans-serif;
+    --bg: #f4eefe;
+    --text: #2a2346;
+    --text-muted: #5f5880;
+    --text-faint: #8d86ab;
+    --accent: #7c5cff;
+    --accent-text: #6a48f5;
+    --on-accent: #ffffff;
+    --surface: #ffffff;
+    --surface-solid: #ffffff;
+    --border: rgba(255, 255, 255, 0.9);
+    --border-strong: rgba(124, 92, 255, 0.28);
+    --border-hover: rgba(255, 255, 255, 0.9);
+    --chip-bg: rgba(255, 255, 255, 0.72);
+    --shadow: 0 18px 32px -14px rgba(92, 64, 170, 0.35), inset 0 -6px 12px rgba(92, 64, 170, 0.1), inset 0 6px 10px rgba(255, 255, 255, 0.9);
+    --shadow-hover: 0 28px 44px -16px rgba(92, 64, 170, 0.45), inset 0 -6px 12px rgba(92, 64, 170, 0.12), inset 0 6px 10px #fff;
+    --radius: 32px;
+    --radius-sm: 20px;
+    --radius-btn: 20px;
+    --display-weight: 700;
+    --display-tracking: -0.02em;
+    --hero-size: clamp(3.4rem, 15vw, 9rem);
+    --tile-hover-transform: translateY(-6px) rotate(-0.5deg);
+    --icon-bg: linear-gradient(145deg, #9b82ff, #6d4dff);
+    --btn-bg: linear-gradient(145deg, #8d70ff, #6a48f5);
+    --btn-fg: #ffffff;
+    --btn-shadow: 0 14px 24px -10px rgba(106, 72, 245, 0.6), inset 0 -4px 8px rgba(40, 10, 120, 0.25), inset 0 4px 8px rgba(255, 255, 255, 0.35);
+    --ghost-bg: #ffffff;
+    --nav-bg: rgba(255, 255, 255, 0.78);
+    --nav-border: #ffffff;
+    --nav-hover: #f1ebff;
+    --nav-active: #e7defe;
+    --nav-shadow: 0 14px 30px -14px rgba(92, 64, 170, 0.35);
+    --progress: linear-gradient(90deg, #ff8fb8, #9b82ff, #5fd3b4);
+    --modal-scrim: rgba(60, 40, 120, 0.3);
+    --blob-opacity: 0.7;
+    --blob-blur: 80px;
+    --blob-1: #ffc9de;
+    --blob-2: #c6f1e2;
+    --blob-3: #d6ccff;
+}
+
+[data-theme="clay"] .tile {
+    transition-timing-function: var(--spring), var(--ease), ease, ease;
+}
+
+/* 타일마다 다른 파스텔 색 */
+[data-theme="clay"] .stat-1         { background: #ffe1d6; }
+[data-theme="clay"] .stat-2         { background: #d7f5e9; }
+[data-theme="clay"] .stat-3         { background: #fff1bf; }
+[data-theme="clay"] .tile-edu       { background: #ebe5ff; }
+[data-theme="clay"] .skill-card     { background: #dff0ff; }
+[data-theme="clay"] .skill-card-wide { background: #ffffff; }
+[data-theme="clay"] .project-card   { background: #ffe6f0; }
+[data-theme="clay"] .project-card + .project-card { background: #e1f7ee; }
+[data-theme="clay"] .research-card  { background: #fff6d6; }
+
+[data-theme="clay"] .tile-photo {
+    border: 6px solid #ffffff;
+}
+
+[data-theme="clay"] .hero-title em,
+[data-theme="clay"] .section-title em,
+[data-theme="clay"] .contact-title em {
     display: inline-block;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0 0.18em;
+    border-radius: 0.28em;
+    background: #ffd36e;
+    box-shadow: inset 0 -0.08em 0 rgba(0, 0, 0, 0.08), 0 0.12em 0.3em -0.1em rgba(180, 120, 0, 0.45);
+    transform: rotate(-2deg);
 }
 
-.theme-switcher-info {
-    margin-top: 0.8rem;
-    font-size: 0.72rem;
-    color: #9ca3af;
-    line-height: 1.4;
-    text-align: center;
+[data-theme="clay"] .hero-title em {
+    margin-top: 0.08em;
 }
 
-/* 터미널 및 다크 모드에 맞춰 위젯 자체 테마 연동 */
-.theme-cyber .theme-switcher-menu,
-.theme-terminal .theme-switcher-menu {
-    background: rgba(15, 17, 26, 0.95);
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 10px 40px rgba(0, 255, 102, 0.15);
+[data-theme="clay"] .hero-badge,
+[data-theme="clay"] .chip,
+[data-theme="clay"] .skill-list li,
+[data-theme="clay"] .research-list li,
+[data-theme="clay"] .contact-row,
+[data-theme="clay"] .social-links a {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 6px 14px -8px rgba(92, 64, 170, 0.35), inset 0 -3px 6px rgba(92, 64, 170, 0.08);
 }
 
-.theme-cyber .theme-switcher-menu h4,
-.theme-terminal .theme-switcher-menu h4 {
-    color: var(--primary-color);
-    border-color: rgba(0, 255, 102, 0.2);
+[data-theme="clay"] .btn-ghost {
+    border-color: #ffffff;
+    box-shadow: 0 12px 22px -12px rgba(92, 64, 170, 0.45), inset 0 -4px 8px rgba(92, 64, 170, 0.1);
 }
 
-.theme-cyber .theme-option-btn,
-.theme-terminal .theme-option-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-dark);
+[data-theme="clay"] .btn,
+[data-theme="clay"] .skill-list li,
+[data-theme="clay"] .contact-row,
+[data-theme="clay"] .social-links a {
+    transition-timing-function: var(--spring);
 }
 
-.theme-cyber .theme-option-btn:hover,
-.theme-terminal .theme-option-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+[data-theme="clay"] .btn:hover {
+    transform: translateY(-3px) scale(1.03);
 }
 
-.theme-cyber .theme-option-btn.active,
-.theme-terminal .theme-option-btn.active {
-    background: var(--primary-color);
-    color: #000000;
-    border-color: var(--primary-color);
+[data-theme="clay"] .stat-num {
+    color: var(--text);
+}
+
+[data-theme="clay"] .marquee {
+    border: none;
+}
+
+[data-theme="clay"] .marquee-track span::after {
+    content: '●';
+    color: #ff8fb8;
+}
+
+[data-theme="clay"] .timeline li::before {
+    background: #ffffff;
+}
+
+
+/* ==========================================================================
+   [테마 5] 애시드 Y2K — 블랙 + 라임, 크롬 타이포, 기울어진 띠
+   ========================================================================== */
+[data-theme="acid"] {
+    color-scheme: dark;
+    --font-display: 'Unbounded', 'Pretendard Variable', Pretendard, sans-serif;
+    --font-subtitle: var(--font-mono);
+    --bg: #0b0b0c;
+    --text: #f2f2ec;
+    --text-muted: #a3a39a;
+    --text-faint: #75756d;
+    --accent: #d4ff3a;
+    --accent-text: #d4ff3a;
+    --on-accent: #0b0b0c;
+    --surface: #141415;
+    --surface-solid: #141415;
+    --border: rgba(212, 255, 58, 0.16);
+    --border-strong: rgba(212, 255, 58, 0.45);
+    --border-hover: #d4ff3a;
+    --chip-bg: rgba(255, 255, 255, 0.03);
+    --shadow: none;
+    --shadow-hover: 0 0 40px -8px rgba(212, 255, 58, 0.35);
+    --radius: 22px;
+    --radius-sm: 14px;
+    --display-weight: 800;
+    --display-tracking: -0.03em;
+    --display-case: uppercase;
+    --hero-size: clamp(2.5rem, 11vw, 8.5rem);
+    --title-size: clamp(1.9rem, 5.6vw, 3.8rem);
+    --icon-bg: #d4ff3a;
+    --icon-fg: #0b0b0c;
+    --btn-bg: #d4ff3a;
+    --btn-fg: #0b0b0c;
+    --btn-shadow: 0 0 30px -6px rgba(212, 255, 58, 0.6);
+    --ghost-bg: transparent;
+    --nav-bg: rgba(11, 11, 12, 0.78);
+    --nav-border: rgba(212, 255, 58, 0.25);
+    --nav-hover: rgba(212, 255, 58, 0.08);
+    --nav-active: #d4ff3a;
+    --nav-shadow: none;
+    --spot: rgba(212, 255, 58, 0.12);
+    --progress: #d4ff3a;
+    --modal-scrim: rgba(0, 0, 0, 0.7);
+    --blob-opacity: 0.18;
+    --blob-blur: 110px;
+    --blob-1: #d4ff3a;
+    --blob-2: #7c3aed;
+    --blob-3: #2563eb;
+    --grid-opacity: 1;
+    --grain-opacity: 0.07;
+}
+
+/* 도트 그리드 배경 */
+[data-theme="acid"] .bg-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+[data-theme="acid"] .nav-links a.is-active {
+    color: #0b0b0c;
+}
+
+[data-theme="acid"] .logo-text,
+[data-theme="acid"] .hero-badge,
+[data-theme="acid"] .btn {
+    font-family: var(--font-mono);
+}
+
+[data-theme="acid"] .btn {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.88rem;
+}
+
+[data-theme="acid"] .hero-badge {
+    border-color: rgba(212, 255, 58, 0.4);
+    color: #d4ff3a;
+    font-size: 0.78rem;
+}
+
+[data-theme="acid"] .pulse-dot {
+    background: #d4ff3a;
+}
+
+/* 크롬(메탈) 질감 텍스트 */
+[data-theme="acid"] .hero-line:first-child,
+[data-theme="acid"] .stat-num {
+    background: linear-gradient(180deg, #ffffff 0%, #d9d9d9 35%, #5f5f5f 52%, #f0f0f0 68%, #9a9a9a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+[data-theme="acid"] .hero-title em {
+    color: transparent;
+    -webkit-text-stroke: 2px #d4ff3a;
+}
+
+[data-theme="acid"] .section-title em,
+[data-theme="acid"] .contact-title em {
+    color: #d4ff3a;
+}
+
+[data-theme="acid"] .section-title::after {
+    content: ' ✦';
+    color: #d4ff3a;
+    font-size: 0.55em;
+    vertical-align: 0.35em;
+}
+
+[data-theme="acid"] .section-index {
+    gap: 0;
+}
+
+[data-theme="acid"] .section-index::before {
+    content: '[';
+}
+
+[data-theme="acid"] .section-index::after {
+    content: ']';
+    width: auto;
+    height: auto;
+    background: none;
+    opacity: 1;
+}
+
+/* 기울어진 라임 띠 */
+[data-theme="acid"] .marquee {
+    left: -5%;
+    right: -5%;
+    bottom: 34px;
+    background: #d4ff3a;
+    border: none;
+    transform: rotate(-2.5deg);
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+[data-theme="acid"] .marquee-track span {
+    color: #0b0b0c;
+    font-weight: 800;
+}
+
+[data-theme="acid"] .marquee-track span::after {
+    color: #0b0b0c;
+}
+
+[data-theme="acid"] .contact-title {
+    text-transform: uppercase;
+}
+
+[data-theme="acid"] .tile-photo img {
+    filter: saturate(1.15) contrast(1.05);
+}
+
+[data-theme="acid"] .photo-tag {
+    background: #d4ff3a;
+    color: #0b0b0c;
+    border: none;
+    font-family: var(--font-mono);
+}
+
+[data-theme="acid"] .photo-tag .pulse-dot {
+    background: #0b0b0c;
+}
+
+[data-theme="acid"] .award-year {
+    background: #d4ff3a;
+    color: #0b0b0c;
+}
+
+[data-theme="acid"] .timeline li::before {
+    background: var(--bg);
+}
+
+[data-theme="acid"] .timeline li.is-now::before {
+    background: #d4ff3a;
 }

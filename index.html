@@ -4,181 +4,354 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>서일훈 | Portfolio</title>
+    <meta name="description" content="교사이자 개발자 서일훈의 포트폴리오">
+    <meta name="theme-color" content="#eef2f7">
+
+    <!-- 테마 결정: 첫 화면이 그려지기 전에 적용해서 깜빡임을 막음 -->
+    <script>
+        (function () {
+            var themes = ['liquid', 'aurora', 'editorial', 'clay', 'acid'];
+            var theme = null;
+            try { theme = new URLSearchParams(location.search).get('theme'); } catch (e) {}
+            if (themes.indexOf(theme) < 0) {
+                try { theme = sessionStorage.getItem('portfolio-theme'); } catch (e) {}
+            }
+            if (themes.indexOf(theme) < 0) {
+                theme = themes[Math.floor(Math.random() * themes.length)];
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js');
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@500;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- 테마별 배경 레이어 (빛 번짐 / 그리드 / 노이즈) -->
+    <div class="page-bg" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="blob blob-3"></span>
+        <span class="bg-grid"></span>
+        <span class="bg-grain"></span>
+    </div>
+
     <!-- 스크롤 진행 상황 표시 바 -->
-    <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-    <!-- PC 전용 커스텀 마우스 커서 -->
-    <div class="custom-cursor" id="customCursor"></div>
-    <div class="custom-cursor-follower" id="customCursorFollower"></div>
-
-    <!-- 네비게이션 -->
-    <nav class="navbar">
-        <div class="nav-content">
-            <div class="logo"><i class="fa-solid fa-code" style="margin-right: 8px;"></i>PORTFOLIO</div>
-            <ul class="nav-links">
-                <li><a href="#home">HOME</a></li>
-                <li><a href="#about">ABOUT ME</a></li>
-                <li><a href="#skills">SKILLS</a></li>
-                <li><a href="#webapps">PORTFOLIO</a></li>
-                <li><a href="#contact">CONTACT</a></li>
-            </ul>
-            <div class="hamburger" id="hamburger">
+    <!-- 플로팅 네비게이션 -->
+    <header class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#home" class="nav-logo" aria-label="맨 위로">
+                <span class="logo-mark">IS</span>
+                <span class="logo-text">ILHOON</span>
+            </a>
+            <nav class="nav-links" aria-label="주요 메뉴">
+                <a href="#home">Home</a>
+                <a href="#about">About Me</a>
+                <a href="#skills">Skills</a>
+                <a href="#webapps">Portfolio</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="hamburger" id="hamburger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
                 <span></span>
                 <span></span>
-                <span></span>
-            </div>
+            </button>
         </div>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#home">HOME</a>
-            <a href="#about">ABOUT ME</a>
-            <a href="#skills">SKILLS</a>
-            <a href="#webapps">PORTFOLIO</a>
-            <a href="#contact">CONTACT</a>
-        </div>
-    </nav>
+        <nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
+            <a href="#home"><span>01</span>Home</a>
+            <a href="#about"><span>02</span>About Me</a>
+            <a href="#skills"><span>03</span>Skills</a>
+            <a href="#webapps"><span>04</span>Portfolio</a>
+            <a href="#contact"><span>05</span>Contact</a>
+        </nav>
+    </header>
 
-    <!-- 히어로 섹션 (메인) -->
-    <section id="home" class="hero">
-        <!-- 입자 배경 캔버스 -->
-        <canvas id="hero-canvas"></canvas>
-        <div class="hero-content">
-            <h1>ILHOON PORTFOLIO</h1>
-            <p class="hero-subtitle">
-                I AM A <span class="typing-text"></span>
-            </p>
-        </div>
-    </section>
-
-    <!-- About Me 섹션 -->
-    <section id="about" class="about">
-        <h2>About Me</h2>
-        <div class="about-content">
-            <div class="profile">
-                <div class="profile-image">
-                    <img src="images/profile.jpg" alt="프로필 이미지">
+    <main>
+        <!-- 히어로 섹션 -->
+        <section id="home" class="hero">
+            <div class="hero-inner container">
+                <p class="hero-badge reveal"><span class="pulse-dot"></span>AI융합교육 석사 과정 중</p>
+                <h1 class="hero-title reveal" style="--d: 1">
+                    <span class="hero-line">ILHOON</span>
+                    <span class="hero-line"><em>Portfolio</em></span>
+                </h1>
+                <p class="hero-subtitle reveal" style="--d: 2">
+                    I AM <span class="typing-article">AN</span> <span class="typing-text"></span>
+                </p>
+                <div class="hero-actions reveal" style="--d: 3">
+                    <a href="#webapps" class="btn btn-primary">프로젝트 보기 <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#contact" class="btn btn-ghost">연락하기</a>
                 </div>
-                <div class="profile-info">
-                    <h3>프로필</h3>
-                    <ul>
-                        <li data-label="이름:">서일훈</li>
-                        <li data-label="학력:">한국디지털미디어고 웹프로그래밍과</li>
-                        <li data-label="    ">청주교육대학교 컴퓨터교육과</li>
-                        <li data-label="    ">오사카교육대학교 (교환학생)</li>
-                        <li data-label="    ">청주교육대학원 AI융합교육 석사파견 中</li>
+            </div>
+
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span>Educator</span><span>Software Developer</span><span>Innovative Creator</span><span>AI융합교육</span><span>JavaScript</span><span>TypeScript</span><span>Unity3D</span>
+                    <span>Educator</span><span>Software Developer</span><span>Innovative Creator</span><span>AI융합교육</span><span>JavaScript</span><span>TypeScript</span><span>Unity3D</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me 섹션 (벤토 그리드) -->
+        <section id="about" class="section about">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-index">01</span>
+                    <h2 class="section-title">About <em>Me</em></h2>
+                    <p class="section-desc">교사이자 개발자, 서일훈을 소개합니다.</p>
+                </div>
+
+                <div class="bento">
+                    <figure class="tile tile-photo reveal">
+                        <img src="images/profile-web.jpg" alt="희망봉에서 찍은 서일훈 프로필 사진" loading="lazy" width="960" height="870">
+                        <figcaption class="photo-tag"><span class="pulse-dot"></span>Hello, I'm Ilhoon</figcaption>
+                    </figure>
+
+                    <div class="tile tile-intro reveal" style="--d: 1">
+                        <span class="tile-label">Profile</span>
+                        <h3 class="intro-name">서일훈 <span>Ilhoon Seo</span></h3>
+                        <p class="intro-text">컴퓨터교육을 전공한 교사이자 개발자입니다. 교실에 필요한 웹 서비스를 직접 기획하고 만듭니다.</p>
+                        <ul class="chip-row">
+                            <li class="chip"><i class="fa-solid fa-chalkboard-user"></i>Educator</li>
+                            <li class="chip"><i class="fa-solid fa-code"></i>Software Developer</li>
+                            <li class="chip"><i class="fa-solid fa-wand-magic-sparkles"></i>Innovative Creator</li>
+                        </ul>
+                    </div>
+
+                    <div class="tile tile-stat stat-1 reveal" style="--d: 2">
+                        <span class="stat-num">2</span>
+                        <span class="stat-label">직접 만든<br>웹 서비스</span>
+                    </div>
+
+                    <div class="tile tile-stat stat-2 reveal" style="--d: 3">
+                        <span class="stat-num">4</span>
+                        <span class="stat-label">공모전·연구대회<br>수상</span>
+                    </div>
+
+                    <div class="tile tile-edu reveal" style="--d: 2">
+                        <span class="tile-label">Education</span>
+                        <ol class="timeline">
+                            <li>
+                                <strong>한국디지털미디어고</strong>
+                                <span>웹프로그래밍과</span>
+                            </li>
+                            <li>
+                                <strong>청주교육대학교</strong>
+                                <span>컴퓨터교육과</span>
+                            </li>
+                            <li>
+                                <strong>오사카교육대학교</strong>
+                                <span>교환학생</span>
+                            </li>
+                            <li class="is-now">
+                                <strong>청주교육대학원</strong>
+                                <span>AI융합교육 석사파견 中</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="tile tile-stat stat-3 reveal" style="--d: 3">
+                        <span class="stat-num">2020~</span>
+                        <span class="stat-label">멘사코리아 회원</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills 섹션 -->
+        <section id="skills" class="section skills">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-index">02</span>
+                    <h2 class="section-title">Skills <em>&amp; Tools</em></h2>
+                    <p class="section-desc">주로 사용하는 언어와 도구입니다.</p>
+                </div>
+
+                <div class="skills-grid">
+                    <article class="tile skill-card reveal">
+                        <div class="skill-head">
+                            <span class="tile-label">Frontend</span>
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <ul class="skill-list">
+                            <li><span class="skill-icon"><i class="fa-brands fa-js"></i></span>JavaScript</li>
+                            <li><span class="skill-icon skill-icon-text">TS</span>TypeScript</li>
+                        </ul>
+                    </article>
+
+                    <article class="tile skill-card skill-card-wide reveal" style="--d: 1">
+                        <div class="skill-head">
+                            <span class="tile-label">Tools</span>
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                        <ul class="skill-list">
+                            <li><span class="skill-icon"><i class="fa-brands fa-git-alt"></i></span>Git</li>
+                            <li><span class="skill-icon"><i class="fa-brands fa-unity"></i></span>Unity3D</li>
+                            <li><span class="skill-icon"><i class="fa-solid fa-terminal"></i></span>Codex</li>
+                            <li><span class="skill-icon"><i class="fa-solid fa-rocket"></i></span>Antigravity</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 내가 만든 웹 어플리케이션 섹션 -->
+        <section id="webapps" class="section webapps">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-index">03</span>
+                    <h2 class="section-title">Web <em>Portfolio</em></h2>
+                    <p class="section-desc">직접 기획하고 개발한 웹 서비스입니다.</p>
+                </div>
+
+                <div class="projects">
+                    <article class="tile project-card reveal">
+                        <div class="project-top">
+                            <span class="project-num">01</span>
+                            <span class="project-icon"><i class="fa-solid fa-sun"></i></span>
+                        </div>
+                        <h3>오늘의 아침활동</h3>
+                        <p>학생들이 아침활동에 할 수 있는 웹 어플리케이션입니다. 교육 현장에서 매일 아침 아이들이 흥미로운 활동을 통해 하루를 열 수 있도록 설계되었습니다.</p>
+                        <div class="project-foot">
+                            <span class="project-url">todaysact.vercel.app</span>
+                            <a href="https://todaysact.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="tile project-card reveal" style="--d: 1">
+                        <div class="project-top">
+                            <span class="project-num">02</span>
+                            <span class="project-icon"><i class="fa-solid fa-comment-dots"></i></span>
+                        </div>
+                        <h3>교사용 문자 생성 챗봇</h3>
+                        <p>교사가 안내문이나 학부모용 알림 문자 메시지를 인공지능을 활용해 맞춤형으로 손쉽게 생성해주는 스마트한 AI 비서 챗봇 서비스입니다.</p>
+                        <div class="project-foot">
+                            <span class="project-url">mmft.vercel.app</span>
+                            <a href="https://mmft.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Awards and Honors 섹션 -->
+        <section id="portfolio" class="section awards">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-index">04</span>
+                    <h2 class="section-title">Awards <em>&amp; Honors</em></h2>
+                    <p class="section-desc">카드를 누르면 자세한 내용을 볼 수 있어요.</p>
+                </div>
+
+                <div class="award-grid reveal">
+                    <button type="button" class="tile award-card" data-award="awards1">
+                        <img src="images/Awards1.jpg" alt="2016 전남 모바일 앱 공모전" loading="lazy">
+                        <span class="award-info">
+                            <span class="award-year">2016</span>
+                            <strong>전남 모바일 앱 공모전</strong>
+                            <span class="award-prize">우수상</span>
+                        </span>
+                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+
+                    <button type="button" class="tile award-card" data-award="awards2">
+                        <img src="images/Awards2.jpg" alt="2016 소프트웨어 교육 에듀톤" loading="lazy">
+                        <span class="award-info">
+                            <span class="award-year">2016</span>
+                            <strong>소프트웨어 교육 에듀톤</strong>
+                            <span class="award-prize">동상</span>
+                        </span>
+                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+
+                    <button type="button" class="tile award-card" data-award="awards3">
+                        <img src="images/Awards3.jpg" alt="멘사코리아 합격 증서" loading="lazy">
+                        <span class="award-info">
+                            <span class="award-year">2020~</span>
+                            <strong>멘사코리아</strong>
+                            <span class="award-prize">정회원</span>
+                        </span>
+                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                </div>
+
+                <div class="tile research-card reveal">
+                    <div class="research-head">
+                        <span class="tile-label">Research</span>
+                        <h3>연구대회 수상 실적</h3>
+                    </div>
+                    <ul class="research-list">
+                        <li>
+                            <span class="research-year">2024</span>
+                            <div>
+                                <strong>제18회 디지털교육 연구대회(SW,AI)</strong>
+                                <span class="research-badges"><em>도 1등급</em><em>전국 3등급</em></span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="research-year">2025</span>
+                            <div>
+                                <strong>디지털 활용업무개선 연구대회</strong>
+                                <span class="research-badges"><em>도 1등급</em></span>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Skills 섹션 -->
-    <section id="skills" class="skills">
-        <h2>Skills</h2>
-        <div class="skills-content">
-            <div class="skill-category">
-                <h3>Frontend</h3>
-                <ul>
-                    <li>JavaScript</li>
-                    <li>TypeScript</li>
-                </ul>
-            </div>
-            <div class="skill-category">
-                <h3>Tools</h3>
-                <ul>
-                    <li>Git</li>
-                    <li>Unity3D</li>
-                    <li>Codex</li>
-                    <li>Antigravity</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- 내가 만든 웹 어플리케이션 섹션 -->
-    <section id="webapps" class="webapps">
-        <h2>Portfolio</h2>
-        <div class="webapps-grid">
-            <div class="webapp-item">
-                <div>
-                    <h3>오늘의 아침활동</h3>
-                    <p>학생들이 아침활동에 할 수 있는 웹 어플리케이션입니다. 교육 현장에서 매일 아침 아이들이 흥미로운 활동을 통해 하루를 열 수 있도록 설계되었습니다.</p>
+        <!-- Contact 섹션 -->
+        <section id="contact" class="section contact">
+            <div class="container">
+                <div class="section-head reveal">
+                    <span class="section-index">05</span>
+                    <h2 class="section-title">Contact <em>Me</em></h2>
+                    <p class="section-desc">언제든 편하게 연락 주세요.</p>
                 </div>
-                <a href="https://todaysact.vercel.app/" target="_blank" class="webapp-link">바로가기</a>
-            </div>
-            <div class="webapp-item">
-                <div>
-                    <h3>교사용 문자 생성 챗봇</h3>
-                    <p>교사가 안내문이나 학부모용 알림 문자 메시지를 인공지능을 활용해 맞춤형으로 손쉽게 생성해주는 스마트한 AI 비서 챗봇 서비스입니다.</p>
-                </div>
-                <a href="https://mmft.vercel.app/" target="_blank" class="webapp-link">바로가기</a>
-            </div>
-        </div>
-    </section>
 
-    <!-- Portfolio 섹션 (Awards and Honors) -->
-    <section id="portfolio" class="portfolio">
-        <h2>Awards and Honors</h2>
-        <div class="portfolio-grid">
-            <div class="portfolio-item" data-award="awards1">
-                <img src="images/Awards1.jpg" alt="2016 전남 모바일 앱 공모전">
-                <div class="portfolio-info">
-                    <h3>2016 전남 모바일 앱 공모전</h3>
-                    <p>우수상</p>
+                <div class="tile contact-card reveal">
+                    <p class="contact-kicker">Let's talk</p>
+                    <h3 class="contact-title">함께 <em>이야기</em>해요</h3>
+                    <div class="contact-links">
+                        <a class="contact-row" href="tel:01095560316">
+                            <span class="contact-icon"><i class="fa-solid fa-phone"></i></span>
+                            <span class="contact-value">010-9556-0316</span>
+                            <i class="fa-solid fa-arrow-right contact-arrow"></i>
+                        </a>
+                        <a class="contact-row" href="mailto:dlfgns0316@naver.com">
+                            <span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>
+                            <span class="contact-value">dlfgns0316@naver.com</span>
+                            <i class="fa-solid fa-arrow-right contact-arrow"></i>
+                        </a>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/ilhoonseo" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
-            <div class="portfolio-item" data-award="awards2">
-                <img src="images/Awards2.jpg" alt="2016 소프트웨어 교육 에듀톤">
-                <div class="portfolio-info">
-                    <h3>2016 소프트웨어 교육 에듀톤</h3>
-                    <p>동상</p>
-                </div>
-            </div>
-            <div class="portfolio-item" data-award="awards3">
-                <img src="images/Awards3.jpg" alt="멘사코리아 합격 증서">
-                <div class="portfolio-info">
-                    <h3>멘사코리아</h3>
-                    <p>2020~</p>
-                </div>
-            </div>
+        </section>
+    </main>
 
-            <div class="portfolio-item portfolio-card-research">
-                <h3 style="margin-bottom: 1.2rem; color: var(--primary-color);">연구대회 수상 실적</h3>
-                <p style="font-size: 1.05rem; margin-bottom: 0.8rem; color: var(--text-dark); font-weight: 600; line-height: 1.8;">
-                    • 제18회 디지털교육 연구대회(SW,AI)<br>
-                    &nbsp;&nbsp;도1등급, 전국3등급(2024)
-                </p>
-                <p style="font-size: 1.05rem; color: var(--text-dark); font-weight: 600; line-height: 1.8;">
-                    • 디지털 활용업무개선 연구대회<br>
-                    &nbsp;&nbsp;도1등급(2025)
-                </p>
-            </div>
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>&copy; 2026 Ilhoon Portfolio. All Rights Reserved.</p>
+            <a href="#home" class="to-top">Top <i class="fa-solid fa-arrow-up"></i></a>
         </div>
-    </section>
+    </footer>
 
-    <!-- Contact 섹션 -->
-    <section id="contact" class="contact">
-        <h2>Contact</h2>
-        <div class="contact-content">
-            <div class="contact-info">
-                <p><i class="fa-solid fa-phone" style="margin-right: 10px; color: var(--primary-color);"></i> 010-9556-0316</p>
-                <p><i class="fa-solid fa-envelope" style="margin-right: 10px; color: var(--primary-color);"></i> dlfgns0316@naver.com</p>
-            </div>
-            <div class="social-links">
-                <a href="https://github.com/ilhoonseo" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 수상 상세 정보 모달 (인터랙티브 레이어 팝업) -->
-    <div class="modal" id="awardModal">
+    <!-- 수상 상세 정보 모달 -->
+    <div class="modal" id="awardModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
-            <span class="modal-close" id="modalClose">&times;</span>
+            <button type="button" class="modal-close" id="modalClose" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
             <img src="" alt="수상 이미지" class="modal-img" id="modalImg">
             <h3 class="modal-title" id="modalTitle"></h3>
             <p class="modal-subtitle" id="modalSubtitle"></p>
@@ -186,39 +359,23 @@
         </div>
     </div>
 
-    <!-- 테마 셀렉터 위젯 -->
-    <div class="theme-switcher-widget" id="themeSwitcherWidget">
-        <button class="theme-switcher-toggle" id="themeSwitcherToggle" aria-label="테마 변경">
+    <!-- 테마 선택 독 -->
+    <div class="theme-dock" id="themeDock">
+        <button type="button" class="theme-dock-toggle" id="themeDockToggle" aria-label="테마 선택 열기" aria-expanded="false">
             <i class="fa-solid fa-palette"></i>
         </button>
-        <div class="theme-switcher-menu" id="themeSwitcherMenu">
-            <h4>💡 테마 변경</h4>
-            <div class="theme-options">
-                <button class="theme-option-btn" data-theme="theme-glass" title="네오 글래스모피즘">
-                    <span class="color-dot" style="background: linear-gradient(135deg, #4f46e5, #06b6d4);"></span> 글래스
-                </button>
-                <button class="theme-option-btn" data-theme="theme-cyber" title="일렉트로 사이버펑크">
-                    <span class="color-dot" style="background: linear-gradient(135deg, #ff007f, #00f0ff);"></span> 사이버
-                </button>
-                <button class="theme-option-btn" data-theme="theme-brutalist" title="네오 브루탈리즘">
-                    <span class="color-dot" style="background: linear-gradient(135deg, #000, #fef08a);"></span> 브루탈
-                </button>
-                <button class="theme-option-btn" data-theme="theme-terminal" title="해커 터미널">
-                    <span class="color-dot" style="background: linear-gradient(135deg, #0d0e12, #00ff66);"></span> 터미널
-                </button>
-                <button class="theme-option-btn" data-theme="theme-minimal" title="프리미엄 세리프">
-                    <span class="color-dot" style="background: linear-gradient(135deg, #8c6239, #f5f2eb);"></span> 세리프
-                </button>
-            </div>
-            <p class="theme-switcher-info">접속할 때마다 새로운 임의의 테마가 자동으로 지정됩니다!</p>
+        <div class="theme-dock-panel" role="group" aria-label="테마 선택">
+            <button type="button" class="theme-swatch" data-theme="liquid" aria-label="리퀴드 글래스" title="리퀴드 글래스"></button>
+            <button type="button" class="theme-swatch" data-theme="aurora" aria-label="오로라 나이트" title="오로라 나이트"></button>
+            <button type="button" class="theme-swatch" data-theme="editorial" aria-label="스위스 에디토리얼" title="스위스 에디토리얼"></button>
+            <button type="button" class="theme-swatch" data-theme="clay" aria-label="소프트 클레이" title="소프트 클레이"></button>
+            <button type="button" class="theme-swatch" data-theme="acid" aria-label="애시드 Y2K" title="애시드 Y2K"></button>
+            <span class="theme-dock-divider" aria-hidden="true"></span>
+            <button type="button" class="theme-shuffle" id="themeShuffle" aria-label="랜덤 테마" title="랜덤 테마"><i class="fa-solid fa-shuffle"></i></button>
         </div>
     </div>
+    <div class="theme-toast" id="themeToast" role="status" aria-live="polite"></div>
 
-    <footer>
-        <p>&copy; 2026 Ilhoon Portfolio. All Rights Reserved.</p>
-    </footer>
-
-    <!-- 모든 인터랙티브 스크립트가 담긴 메인 JS 파일 -->
     <script src="js/main.js"></script>
 </body>
 </html>
