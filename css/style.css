@@ -682,7 +682,7 @@ button {
 }
 
 .intro-name {
-    margin-bottom: 0.7rem;
+    margin-bottom: 1.1rem;
     font-size: clamp(2rem, 4vw, 2.75rem);
     font-weight: 800;
     letter-spacing: -0.035em;
@@ -694,14 +694,6 @@ button {
     font-size: 0.42em;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: var(--text-muted);
-}
-
-.intro-text {
-    max-width: 46ch;
-    margin-bottom: 1.3rem;
-    font-size: 1.05rem;
-    line-height: 1.75;
     color: var(--text-muted);
 }
 
