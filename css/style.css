@@ -52,7 +52,6 @@
     --btn-bg: var(--accent);
     --btn-fg: var(--on-accent);
     --btn-shadow: none;
-    --ghost-bg: transparent;
     --nav-bg: rgba(255, 255, 255, 0.7);
     --nav-border: var(--border);
     --nav-hover: rgba(15, 23, 42, 0.05);
@@ -338,12 +337,6 @@ button {
     box-shadow: var(--btn-shadow);
 }
 
-.btn-ghost {
-    background: var(--ghost-bg);
-    color: var(--text);
-    border-color: var(--border-strong);
-}
-
 .btn-sm {
     padding: 0.7rem 1.1rem;
     font-size: 0.88rem;
@@ -456,12 +449,47 @@ button {
     50% { border-color: transparent; }
 }
 
-.hero-actions {
+/* 첫 화면 아래쪽의 스크롤 안내 */
+.scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: var(--cue-bottom, 92px);
+    z-index: 2;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: var(--hero-items);
+    flex-direction: column;
+    align-items: center;
     gap: 10px;
-    margin-top: 0.4rem;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text-faint);
+}
+
+.scroll-cue-line {
+    position: relative;
+    width: 1px;
+    height: 48px;
+    overflow: hidden;
+    background: var(--border-strong);
+}
+
+.scroll-cue-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -40%;
+    width: 100%;
+    height: 40%;
+    background: var(--accent);
+    animation: scroll-cue 1.8s var(--ease) infinite;
+}
+
+@keyframes scroll-cue {
+    to { top: 100%; }
 }
 
 .marquee {
@@ -1494,10 +1522,6 @@ button {
 
     .hero {
         padding: 110px 0 120px;
-    }
-
-    .hero-actions .btn {
-        flex: 1 1 auto;
     }
 
     .bento {

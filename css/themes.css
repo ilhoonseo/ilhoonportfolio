@@ -30,7 +30,6 @@
     --btn-bg: rgba(11, 16, 32, 0.9);
     --btn-fg: #ffffff;
     --btn-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 10px 24px -8px rgba(11, 16, 32, 0.45);
-    --ghost-bg: rgba(255, 255, 255, 0.45);
     --nav-bg: rgba(255, 255, 255, 0.42);
     --nav-border: rgba(255, 255, 255, 0.75);
     --nav-hover: rgba(255, 255, 255, 0.5);
@@ -105,7 +104,6 @@
     --btn-bg: #f4f4f6;
     --btn-fg: #0a0a0f;
     --btn-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 10px 34px -8px rgba(139, 92, 246, 0.7);
-    --ghost-bg: rgba(255, 255, 255, 0.03);
     --nav-bg: rgba(14, 14, 20, 0.6);
     --nav-border: rgba(255, 255, 255, 0.08);
     --nav-hover: rgba(255, 255, 255, 0.06);
@@ -188,7 +186,6 @@
     --icon-fg: #f2f0ea;
     --btn-bg: #111111;
     --btn-fg: #f2f0ea;
-    --ghost-bg: transparent;
     --nav-bg: rgba(242, 240, 234, 0.92);
     --nav-border: #111111;
     --nav-hover: rgba(17, 17, 17, 0.06);
@@ -231,6 +228,13 @@
 
 [data-theme="editorial"] .hero-title {
     line-height: 0.84;
+}
+
+/* 왼쪽 정렬 제목에 맞춰 스크롤 안내도 왼쪽으로 */
+[data-theme="editorial"] .scroll-cue {
+    left: max(16px, (100% - var(--container)) / 2);
+    align-items: flex-start;
+    transform: none;
 }
 
 [data-theme="editorial"] .hero-title em,
@@ -363,7 +367,6 @@
     --btn-bg: linear-gradient(145deg, #8d70ff, #6a48f5);
     --btn-fg: #ffffff;
     --btn-shadow: 0 14px 24px -10px rgba(106, 72, 245, 0.6), inset 0 -4px 8px rgba(40, 10, 120, 0.25), inset 0 4px 8px rgba(255, 255, 255, 0.35);
-    --ghost-bg: #ffffff;
     --nav-bg: rgba(255, 255, 255, 0.78);
     --nav-border: #ffffff;
     --nav-hover: #f1ebff;
@@ -415,11 +418,6 @@
 [data-theme="clay"] .social-links a {
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 6px 14px -8px rgba(92, 64, 170, 0.35), inset 0 -3px 6px rgba(92, 64, 170, 0.08);
-}
-
-[data-theme="clay"] .btn-ghost {
-    border-color: #ffffff;
-    box-shadow: 0 12px 22px -12px rgba(92, 64, 170, 0.45), inset 0 -4px 8px rgba(92, 64, 170, 0.1);
 }
 
 [data-theme="clay"] .btn,
@@ -480,7 +478,6 @@
     --btn-bg: #d4ff3a;
     --btn-fg: #0b0b0c;
     --btn-shadow: 0 0 30px -6px rgba(212, 255, 58, 0.6);
-    --ghost-bg: transparent;
     --nav-bg: rgba(11, 11, 12, 0.78);
     --nav-border: rgba(212, 255, 58, 0.25);
     --nav-hover: rgba(212, 255, 58, 0.08);
@@ -564,6 +561,10 @@
     height: auto;
     background: none;
     opacity: 1;
+}
+
+[data-theme="acid"] .hero {
+    --cue-bottom: 128px;
 }
 
 /* 기울어진 라임 띠 */
