@@ -368,10 +368,6 @@
     border-radius: 0;
 }
 
-[data-theme="editorial"] .contact-row:hover .contact-arrow {
-    color: #111;
-}
-
 
 /* ==========================================================================
    [테마 4] 소프트 클레이 — 말랑한 파스텔 3D, 통통 튀는 인터랙션
@@ -458,7 +454,6 @@
 [data-theme="clay"] .chip,
 [data-theme="clay"] .skill-list li,
 [data-theme="clay"] .research-list li,
-[data-theme="clay"] .contact-row,
 [data-theme="clay"] .social-links a {
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 6px 14px -8px rgba(92, 64, 170, 0.35), inset 0 -3px 6px rgba(92, 64, 170, 0.08);
@@ -471,7 +466,6 @@
 
 [data-theme="clay"] .btn,
 [data-theme="clay"] .skill-list li,
-[data-theme="clay"] .contact-row,
 [data-theme="clay"] .social-links a {
     transition-timing-function: var(--spring);
 }

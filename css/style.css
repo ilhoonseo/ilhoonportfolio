@@ -1103,59 +1103,6 @@ button {
     line-height: 1.05;
 }
 
-.contact-links {
-    display: grid;
-    gap: 10px;
-    width: min(100%, 460px);
-    margin-top: 0.4rem;
-}
-
-.contact-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 16px 12px 12px;
-    border-radius: var(--radius-sm);
-    background: var(--chip-bg);
-    border: 1px solid var(--border);
-    font-size: 1.05rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: border-color 0.3s ease, transform 0.35s var(--ease);
-}
-
-.contact-row:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
-}
-
-.contact-icon {
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: calc(var(--radius-sm) - 4px);
-    background: var(--icon-bg);
-    color: var(--icon-fg);
-}
-
-.contact-value {
-    flex: 1;
-    text-align: left;
-    overflow-wrap: anywhere;
-}
-
-.contact-arrow {
-    color: var(--text-faint);
-    transition: transform 0.35s var(--ease), color 0.3s ease;
-}
-
-.contact-row:hover .contact-arrow {
-    transform: translateX(4px);
-    color: var(--accent-text);
-}
-
 .social-links {
     display: flex;
     gap: 10px;
@@ -1669,10 +1616,6 @@ button {
 
     .research-list li {
         align-items: flex-start;
-    }
-
-    .contact-value {
-        font-size: 0.98rem;
     }
 }
 
