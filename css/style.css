@@ -254,13 +254,13 @@ body::after {
 }
 
 /* 컬러바 순서 (오프닝·로고·모바일 메뉴 공통) */
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(1) { --c: var(--bar-white); --i: 0; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(2) { --c: var(--bar-yellow); --i: 1; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(3) { --c: var(--bar-cyan); --i: 2; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(4) { --c: var(--bar-green); --i: 3; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(5) { --c: var(--bar-magenta); --i: 4; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(6) { --c: var(--bar-red); --i: 5; }
-:is(.leader-bars, .logo-bars, .mobile-menu-bars) > :nth-child(7) { --c: var(--bar-blue); --i: 6; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(1) { --c: var(--bar-white); --i: 0; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(2) { --c: var(--bar-yellow); --i: 1; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(3) { --c: var(--bar-cyan); --i: 2; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(4) { --c: var(--bar-green); --i: 3; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(5) { --c: var(--bar-magenta); --i: 4; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(6) { --c: var(--bar-red); --i: 5; }
+:is(.leader-bars, .logo-bars, .mobile-menu-bars, .cut) > :nth-child(7) { --c: var(--bar-blue); --i: 6; }
 
 /* ==========================================================================
    오프닝 (컬러바 → 3·2·1 카운트다운 → 아래에서 위로 걷힘)
@@ -428,6 +428,62 @@ body::after {
 
 .hud-rec {
     color: var(--fg);
+}
+
+.hud-play {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 0.25rem;
+    padding: 0;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+    pointer-events: auto;
+    transition: border-color 0.25s, scale 0.3s var(--spring);
+}
+
+.hud-play:hover {
+    border-color: var(--fg);
+    scale: 1.08;
+}
+
+.hud-play svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+}
+
+.hud-play .i-play,
+:root.is-paused .hud-play .i-pause {
+    display: none;
+}
+
+:root.is-paused .hud-play .i-play {
+    display: block;
+}
+
+/* 일시정지: 화면의 모든 CSS 애니메이션을 그 자리에서 멈춤 (오프닝은 예외) */
+:root.is-paused *,
+:root.is-paused *::before,
+:root.is-paused *::after {
+    animation-play-state: paused !important;
+}
+
+:root.is-paused .leader,
+:root.is-paused .leader * {
+    animation-play-state: running !important;
+}
+
+/* 화면 밖에 있는 장면은 멈춰 둠 (main.js가 .is-offscreen을 붙였다 뗌) */
+.is-offscreen *,
+.is-offscreen *::before,
+.is-offscreen *::after {
+    animation-play-state: paused !important;
 }
 
 .hud-tc {
@@ -869,8 +925,8 @@ body::after {
 }
 
 .s-circle {
-    top: 19%;
-    right: 17%;
+    top: 11%;
+    right: 26%;
     width: clamp(72px, 11vw, 170px);
     aspect-ratio: 1;
 }
@@ -990,6 +1046,28 @@ body::after {
     font-weight: inherit;
 }
 
+/* 스테이지: 샷을 한 칸에 겹쳐 두고 켜진(.is-on) 샷만 보여줌.
+   높이는 가장 큰 샷 기준이라 샷이 바뀌어도 아래 내용이 흔들리지 않음.
+   --sd는 샷 안 애니메이션의 시작 지연값 (처음엔 오프닝 길이, 이후 main.js가 짧게 바꿈) */
+.stage {
+    --sd: var(--intro);
+    display: grid;
+}
+
+.shot {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    visibility: hidden;
+}
+
+.shot.is-on {
+    visibility: visible;
+}
+
+/* ---- 샷 1: ILHOON ---- */
 .hero-word {
     display: flex;
     margin-left: -0.04em;
@@ -998,10 +1076,8 @@ body::after {
     font-size: clamp(4.1rem, 16.4vw, 15rem);
     line-height: 0.8;
     letter-spacing: -0.01em;
-    font-variation-settings: "wdth" var(--hw, 125);
 }
 
-/* 글자마다 마스크(.ch) 안에서 아래 → 위로 솟아오름 */
 .hero-word .ch {
     display: inline-block;
     overflow: hidden;
@@ -1010,9 +1086,14 @@ body::after {
 
 .hero-word .ch > span {
     display: inline-block;
-    font-variation-settings: "wdth" var(--lw, var(--hw, 125));
-    transition: font-variation-settings 0.45s var(--ease-out);
-    animation: ch-rise 1s var(--ease-out) calc(var(--intro) + 0.1s + var(--i) * 0.065s) both;
+    font-variation-settings: "wdth" 125;
+}
+
+/* 글자가 마스크 안에서 솟아오른 뒤, 폭이 좁아졌다 넓어지는 물결이 글자를 따라 계속 흐름 */
+.shot-name.is-on .ch > span {
+    animation:
+        ch-rise 1s var(--ease-out) calc(var(--sd) + 0.1s + var(--i) * 0.065s) both,
+        name-wave 2.6s ease-in-out calc(var(--sd) + 1.1s + var(--i) * 0.13s) infinite;
 }
 
 .hero-sub {
@@ -1027,10 +1108,13 @@ body::after {
     height: 2px;
     background: var(--fg);
     transform-origin: 0 50%;
-    animation: rule-draw 1.1s var(--ease-out) calc(var(--intro) + 0.45s) both;
 }
 
-/* 형광펜 블록이 먼저 그어지고 글자가 나타남 */
+.shot-name.is-on .hero-rule {
+    animation: rule-draw 1.1s var(--ease-out) calc(var(--sd) + 0.45s) both;
+}
+
+/* 형광펜 블록이 그어지고 글자가 나타난 뒤, 블록이 빠졌다 다시 그어지기를 반복 */
 .hero-portfolio {
     position: relative;
     isolation: isolate;
@@ -1040,7 +1124,6 @@ body::after {
     letter-spacing: 0.01em;
     text-transform: uppercase;
     color: var(--on-bar);
-    animation: hl-text 0.5s steps(1, end) calc(var(--intro) + 0.6s) both;
 }
 
 .hero-portfolio::before {
@@ -1050,74 +1133,184 @@ body::after {
     z-index: -1;
     background: var(--bar-yellow);
     transform-origin: 0 50%;
-    animation: rule-draw 0.7s var(--ease-io) calc(var(--intro) + 0.5s) both;
 }
 
-.hero-role {
-    margin-top: clamp(1.4rem, 4vw, 2.6rem);
-    font: 500 clamp(0.8rem, 1.5vw, 1.05rem)/1.25 var(--f-mono);
-    letter-spacing: 0.14em;
+.shot-name.is-on .hero-portfolio {
+    animation: hl-text 0.5s steps(1, end) calc(var(--sd) + 0.6s) both;
+}
+
+.shot-name.is-on .hero-portfolio::before {
+    animation:
+        rule-draw 0.7s var(--ease-io) calc(var(--sd) + 0.5s) both,
+        hl-sweep 2.2s var(--ease-io) calc(var(--sd) + 1.6s) infinite;
+}
+
+/* ---- 샷 2~4: 역할 단어 (글자 크기는 main.js가 화면 폭에 맞춰 --fs로 정함) ---- */
+.shot-role {
+    position: relative;
+    align-items: flex-start;
+}
+
+.shot-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    margin-bottom: clamp(0.7rem, 1.8vw, 1.2rem);
+    font: 500 clamp(0.78rem, 1.5vw, 1.05rem)/1 var(--f-mono);
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--muted);
-    animation: fade-up 0.8s var(--ease-out) calc(var(--intro) + 0.75s) both;
 }
 
-.role-line {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0 0.6em;
+.shot-kicker::before {
+    content: "";
+    width: 1.6em;
+    height: 0.55em;
+    background: var(--bar-yellow);
 }
 
-.role-article {
-    color: var(--fg);
-}
-
-/* 단어가 글자 단위로 위로 빠지고 아래에서 새 단어가 올라옴 (main.js) */
-.role-roller {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    height: 1.4em;
-    overflow: hidden;
-    color: var(--fg);
-    font-weight: 600;
+.shot-word {
+    display: flex;
+    width: max-content;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: var(--fs, min(calc((100vw - 2 * var(--gutter)) / (var(--len) * 0.92)), 12rem));
+    line-height: 0.82;
+    letter-spacing: -0.01em;
+    font-variation-settings: "wdth" 125;
+    text-transform: uppercase;
     white-space: nowrap;
-    transition: width 0.55s var(--ease-out);
 }
 
-.roll-word {
+.sl {
+    display: inline-block;
+}
+
+.shot-role.is-on .shot-kicker {
+    animation: kicker-in 0.6s var(--ease-out) var(--sd) both;
+}
+
+/* 샷 2 EDUCATOR: 글자가 위에서 떨어져 통통 튀고, 뒤로 공이 굴러 들어옴 */
+.shot-educator.is-on .sl {
+    animation:
+        sl-drop 0.8s var(--spring) calc(var(--sd) + 0.1s + var(--i) * 0.05s) both,
+        sl-bob 0.8s ease-in-out calc(var(--sd) + 1s + var(--i) * 0.07s) infinite alternate;
+}
+
+.deco-wheel {
+    position: absolute;
+    z-index: -1;
+    top: 8%;
+    left: 62%;
+    width: calc(var(--fs, 8rem) * 1.05);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 50% 18%, var(--on-bar) 0 7%, transparent 7.5%),
+        var(--bar-yellow);
+}
+
+.shot-educator.is-on .deco-wheel {
+    animation: wheel-roll 1.5s var(--ease-out) var(--sd) both, wheel-rock 1.2s ease-in-out calc(var(--sd) + 1.5s) infinite alternate;
+}
+
+/* 샷 3 DEVELOPER: 글자가 무작위 문자로 뒤섞이다 제자리를 찾음 (main.js), 커서가 깜빡임 */
+.shot-developer .shot-word::after {
+    content: "";
+    align-self: stretch;
+    width: 0.09em;
+    margin: 0.04em 0 0.02em 0.06em;
+    background: var(--bar-cyan);
+    animation: blink 0.9s steps(1) infinite;
+}
+
+.shot-developer .sl {
+    text-align: center;
+}
+
+.deco-code {
     position: absolute;
     top: 0;
-    left: 0;
-    display: inline-flex;
-    align-items: center;
-    height: 100%;
-    white-space: pre;
+    right: 0;
+    font: 700 calc(var(--fs, 8rem) * 0.34)/1 var(--f-mono);
+    color: var(--bar-cyan);
 }
 
-.roll-ch {
-    display: inline-block;
-    transition: transform 0.55s var(--ease-out), opacity 0.55s;
-    transition-delay: calc(var(--i) * 16ms);
+.shot-developer.is-on .deco-code {
+    animation: code-in 0.7s var(--spring) calc(var(--sd) + 0.2s) both, code-glitch 1.4s steps(1) calc(var(--sd) + 1s) infinite;
 }
 
-.roll-word.is-enter .roll-ch {
-    transform: translateY(120%);
+/* 샷 4 CREATOR: 글자가 튀어나오며 기울고, 가운데서 도형 조각이 터져 나감 */
+.shot-creator .sl:nth-child(odd) { --tilt: -7deg; }
+.shot-creator .sl:nth-child(even) { --tilt: 7deg; }
+
+.shot-creator.is-on .sl {
+    animation:
+        sl-pop 0.7s var(--spring) calc(var(--sd) + 0.15s + var(--i) * 0.06s) both,
+        sl-tilt 0.7s ease-in-out calc(var(--sd) + 0.95s + var(--i) * 0.06s) infinite alternate;
+}
+
+.burst {
+    --d: min(42vw, 480px);
+    position: absolute;
+    top: 62%;
+    left: 50%;
+    z-index: -1;
+}
+
+.burst i {
+    position: absolute;
+    width: clamp(10px, 1.4vw, 18px);
+    aspect-ratio: 1;
+    margin: -7px 0 0 -7px;
+    border-radius: var(--r, 50%);
+    background: var(--c);
     opacity: 0;
 }
 
-.roll-word.is-leave .roll-ch {
-    transform: translateY(-120%);
-    opacity: 0;
+.shot-creator.is-on .burst i {
+    animation: burst 1.6s var(--ease-out) calc(var(--sd) + 0.25s) both;
 }
 
-.role-caret {
-    width: 0.55em;
-    height: 1.05em;
-    margin-left: -0.3em;
-    background: var(--bar-yellow);
-    animation: blink 1s steps(1) infinite;
+/* 샷 전환 컬러바: 세로 막대(기본) 또는 가로 막대(.is-rows)가 덮었다 빠짐 */
+.cut {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    pointer-events: none;
+}
+
+.cut.is-rows {
+    grid-template-columns: none;
+    grid-template-rows: repeat(7, 1fr);
+}
+
+.cut span {
+    background: var(--c);
+    transform: scaleY(0);
+}
+
+.cut.is-rows span {
+    transform: scaleX(0);
+}
+
+.cut.is-on span {
+    animation: cut-col 0.95s var(--ease-io) calc(var(--i) * 0.02s) both;
+}
+
+.cut.is-rows.is-on span {
+    animation-name: cut-row;
+}
+
+/* 전환 순간 도형들이 한 번 크게 튐 */
+.shape {
+    transition: scale 0.5s var(--spring);
+}
+
+.hero.is-cut .shape {
+    scale: 1.3;
 }
 
 /* 회전하는 원형 텍스트 배지 */
@@ -1366,12 +1559,33 @@ body::after {
     animation: clap-shake 0.3s ease 0.55s;
 }
 
+/* 클래퍼는 몇 초마다 다시 열렸다 "탁" 닫힘 */
+.motion .slate.is-in .clapper i:first-child {
+    animation: clap-loop 4.5s ease-in 2.5s infinite;
+}
+
 .motion .slate.is-in .wipe {
     animation: wipe-text 0.9s linear var(--wd, 0s) both;
 }
 
+/* 등장한 뒤에도 색 블록이 몇 초마다 다시 훑고 지나감 */
 .motion .slate.is-in .wipe::after {
-    animation: wipe-block 0.9s var(--ease-io) var(--wd, 0s) both;
+    animation:
+        wipe-block 0.9s var(--ease-io) var(--wd, 0s) both,
+        wipe-again 6s var(--ease-io) calc(var(--wd, 0s) + 3s) infinite;
+}
+
+/* 외곽선 단어에는 빛줄기가 지나가며 속이 잠깐 채워짐 */
+.scene-title .wipe:last-child {
+    background: linear-gradient(100deg, transparent 35%, var(--fg) 50%, transparent 65%) 150% 0 / 250% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.motion .slate.is-in .wipe:last-child {
+    animation:
+        wipe-text 0.9s linear var(--wd, 0s) both,
+        shine 3.4s ease-in-out 1.4s infinite;
 }
 
 /* 아래에서 떠오르는 기본 등장 */
@@ -1411,21 +1625,91 @@ body::after {
     transition: clip-path 1.3s var(--ease-io);
 }
 
-.photo-frame img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: scale 1.8s var(--ease-out);
-}
-
-/* 조리개처럼 원이 열리며 사진이 나타남 */
+/* 조리개처럼 원이 열리며 화면이 나타남 */
 .motion .photo:not(.is-in) .photo-frame {
     clip-path: circle(0% at 50% 50%);
 }
 
-.motion .photo:not(.is-in) .photo-frame img {
-    scale: 1.2;
+/* 역할 도형 화면: 원(Educator) → 사각형(Developer) → 삼각형(Creator)이
+   가운데 자리를 차례로 넘겨받으며 9초마다 한 바퀴 돌고, 아래 이름이 함께 바뀜 */
+.portrait {
+    background: var(--film-bg);
+    color: var(--film-fg);
 }
+
+.pt-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background:
+        linear-gradient(var(--film-line) 1px, transparent 1px) 0 0 / 40px 40px,
+        linear-gradient(90deg, var(--film-line) 1px, transparent 1px) 0 0 / 40px 40px;
+    animation: grid-pan 6s linear infinite;
+}
+
+.pt-ring {
+    position: absolute;
+    top: 44%;
+    left: 50%;
+    width: 48%;
+    aspect-ratio: 1;
+    border: 2px dashed color-mix(in srgb, var(--film-fg) 30%, transparent);
+    border-radius: 50%;
+    translate: -50% -50%;
+    animation: spin 18s linear infinite;
+}
+
+.pt-shape {
+    position: absolute;
+    width: 18%;
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    animation: role-orbit 9s var(--ease-io) infinite;
+}
+
+.pt-circle {
+    top: 44%;
+    left: 50%;
+    z-index: 2;
+    scale: 1.7;
+    border-radius: 50%;
+    background: var(--bar-yellow);
+}
+
+.pt-square {
+    top: 72%;
+    left: 80%;
+    scale: 0.7;
+    background: var(--bar-cyan);
+    animation-delay: -6s;
+}
+
+.pt-tri {
+    top: 72%;
+    left: 20%;
+    scale: 0.7;
+    background: var(--bar-magenta);
+    clip-path: polygon(50% 6%, 96% 92%, 4% 92%);
+    animation-delay: -3s;
+}
+
+.pt-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8%;
+    text-align: center;
+    font: 800 clamp(1rem, 2.4vw, 1.5rem)/1 var(--f-display);
+    font-variation-settings: "wdth" 110;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: role-caption 9s var(--ease-out) infinite;
+}
+
+.pt-cap-1 { opacity: 1; }
+.pt-cap-2 { animation-delay: -6s; }
+.pt-cap-3 { animation-delay: -3s; }
 
 .photo-rec {
     position: absolute;
@@ -1476,7 +1760,7 @@ body::after {
     aspect-ratio: 1;
     border-radius: 50%;
     background: var(--bar-yellow);
-    translate: 0 calc((var(--p, 0.5) - 0.5) * -70px);
+    animation: orbit 9s ease-in-out infinite;
 }
 
 .photo-deco-b {
@@ -1485,7 +1769,7 @@ body::after {
     width: 24%;
     aspect-ratio: 1;
     background: var(--bar-blue);
-    rotate: calc(var(--p, 0.5) * 180deg);
+    animation: spin 12s linear infinite;
 }
 
 .photo-tag {
@@ -1575,11 +1859,7 @@ body::after {
     flex: none;
     width: 12px;
     height: 12px;
-    transition: rotate 0.6s var(--ease-out);
-}
-
-.roles li:hover .role-shape {
-    rotate: 180deg;
+    animation: chip-hop 3s var(--ease-io) calc(var(--i) * 0.4s) infinite;
 }
 
 .shape-circle {
@@ -1821,7 +2101,6 @@ body::after {
     align-items: center;
     gap: clamp(1rem, 3vw, 2.5rem);
     padding-block: clamp(0.5rem, 1.4vw, 1rem);
-    translate: calc((var(--p, 0.5) - 0.5) * var(--dir) * var(--k-shift, -12vw)) 0;
 }
 
 .k-cat {
@@ -1829,7 +2108,6 @@ body::after {
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
-    transition: color 0.3s;
 }
 
 .k-name {
@@ -1842,34 +2120,85 @@ body::after {
     text-transform: uppercase;
     white-space: nowrap;
     font-variation-settings: "wdth" 78;
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--fg);
-    background-image: linear-gradient(90deg, var(--fg) 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: calc((1 - var(--fill, 1)) * 100%) 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    transform: skewX(calc(var(--skew, 0) * 1deg));
-    transition: font-variation-settings 0.6s var(--ease-out);
 }
 
 .k-glyph {
     width: clamp(1.8rem, 4.4vw, 3.6rem);
     aspect-ratio: 1;
-    rotate: calc(var(--p, 0) * 360deg);
-    transition: scale 0.5s var(--spring);
 }
 
-.k-row:hover .k-name {
-    font-variation-settings: "wdth" 125;
+/* 움직임이 켜지면 main.js가 각 줄을 끝없이 흐르는 띠(.k-track)로 바꿈.
+   꽉 찬 글자와 외곽선 글자가 번갈아 흐르고, 왼쪽에는 분류 이름표가 고정됨 */
+.k-row.is-marquee {
+    position: relative;
 }
 
-.k-row:hover .k-cat {
+.k-row.is-marquee .k-inner {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.k-row.is-marquee::before {
+    content: attr(data-cat);
+    position: absolute;
+    top: 50%;
+    left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    z-index: 1;
+    padding: 0.42rem 0.6rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 3px;
+    background: var(--bg);
+    font: 500 0.62rem/1 var(--f-mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    translate: 0 -50%;
+}
+
+.k-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    padding-block: clamp(0.45rem, 1.2vw, 0.9rem);
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: clamp(2.4rem, 7.6vw, 6.4rem);
+    line-height: 1.02;
+    text-transform: uppercase;
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.k-track > * {
+    flex: none;
+    margin-right: 0.32em;
+}
+
+.k-word {
+    font-variation-settings: "wdth" 85;
+    transform: skewX(calc(var(--skew, 0) * 1deg));
+}
+
+.k-word.is-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--fg);
+    transition: color 0.4s;
+}
+
+.k-row:hover .k-word.is-outline {
     color: var(--fg);
 }
 
-.k-row:hover .k-glyph {
-    scale: 1.25;
+.k-track .k-glyph {
+    width: 0.5em;
+    animation: spin 5s linear infinite;
 }
 
 .gl-circle {
@@ -1949,13 +2278,6 @@ body::after {
     position: relative;
     overflow: hidden;
     aspect-ratio: 16 / 9;
-}
-
-/* 화면 밖에 있을 때는 루프를 멈춤 (main.js) */
-.viewer.is-paused *,
-.viewer.is-paused *::before,
-.viewer.is-paused *::after {
-    animation-play-state: paused !important;
 }
 
 .viewer-bar {
@@ -2372,8 +2694,7 @@ body::after {
     background: var(--hole);
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='10'%3E%3Crect width='15' height='10' rx='2.5'/%3E%3C/svg%3E") 0 0 / 30px 10px repeat-x;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='10'%3E%3Crect width='15' height='10' rx='2.5'/%3E%3C/svg%3E") 0 0 / 30px 10px repeat-x;
-    -webkit-mask-position: calc(var(--p, 0) * -420px) 0;
-    mask-position: calc(var(--p, 0) * -420px) 0;
+    animation: film-run 0.9s linear infinite;
 }
 
 .filmstrip::before { top: 0.85rem; }
@@ -2399,6 +2720,7 @@ body::after {
     text-align: left;
     cursor: pointer;
     appearance: none;
+    animation: frame-float 4.5s ease-in-out calc(var(--fi, 0) * -1.5s) infinite alternate;
     transition:
         opacity 0.8s var(--ease-out) var(--rd, 0s),
         translate 0.9s var(--ease-out) var(--rd, 0s),
@@ -2581,6 +2903,11 @@ body::after {
     opacity: 0;
 }
 
+/* 찍힌 뒤에도 몇 초마다 한 번씩 다시 "쾅" */
+.motion .research.is-in .stamp {
+    animation: stamp-thump 4s ease-out calc(1.6s + var(--i) * 0.5s) infinite;
+}
+
 /* ==========================================================================
    SC.05 Contact
    ========================================================================== */
@@ -2608,16 +2935,14 @@ body::after {
 
 .tc {
     display: inline-block;
-    font-variation-settings: "wdth" var(--w, 92);
+    font-variation-settings: "wdth" 92;
     transition:
-        font-variation-settings 0.45s var(--ease-out),
-        color 0.3s,
         translate 0.9s var(--ease-out) calc(var(--i) * 0.05s),
         opacity 0.5s calc(var(--i) * 0.05s);
 }
 
-.tc.is-hot {
-    color: var(--c);
+.motion .talk.is-in .tc {
+    animation: talk-wave 2.8s ease-in-out calc(1.2s + var(--i) * 0.16s) infinite;
 }
 
 .motion .talk:not(.is-in) .tc {
@@ -2744,6 +3069,25 @@ body::after {
 .motion .credits-roll:not(.is-in) > * {
     opacity: 0;
     translate: 0 50px;
+}
+
+.credits-window {
+    width: 100%;
+}
+
+.credits-window.is-rolling {
+    height: clamp(11rem, 30vw, 13rem);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+}
+
+.credits-window.is-rolling .credits-track {
+    animation: credits-roll 12s linear infinite;
+}
+
+.credits-window.is-rolling .credits-list {
+    padding-bottom: 1.6rem;
 }
 
 .credits-list {
@@ -3176,6 +3520,149 @@ body::after {
     98%, 100% { scale: 0.9; opacity: 0; }
 }
 
+@keyframes name-wave {
+    0%, 100% { font-variation-settings: "wdth" 125; }
+    50% { font-variation-settings: "wdth" 68; }
+}
+
+@keyframes hl-sweep {
+    0%, 55% { transform: scaleX(1); transform-origin: 100% 50%; }
+    70% { transform: scaleX(0); transform-origin: 100% 50%; }
+    70.01% { transform: scaleX(0); transform-origin: 0 50%; }
+    85%, 100% { transform: scaleX(1); transform-origin: 0 50%; }
+}
+
+@keyframes kicker-in {
+    from { clip-path: inset(0 100% 0 0); translate: -12px 0; }
+    to { clip-path: inset(0 0 0 0); translate: 0 0; }
+}
+
+@keyframes sl-drop {
+    from { translate: 0 -120%; opacity: 0; }
+}
+
+@keyframes sl-bob {
+    to { translate: 0 -5%; }
+}
+
+@keyframes wheel-roll {
+    from { translate: -95vw 0; rotate: -1080deg; }
+}
+
+@keyframes wheel-rock {
+    from { rotate: -14deg; }
+    to { rotate: 14deg; }
+}
+
+@keyframes code-in {
+    from { translate: 40% 0; opacity: 0; }
+}
+
+@keyframes code-glitch {
+    0%, 12%, 100% { translate: 0 0; }
+    8% { translate: -5px 2px; }
+    10% { translate: 4px -2px; }
+}
+
+@keyframes sl-pop {
+    from { scale: 0; rotate: -30deg; }
+}
+
+@keyframes sl-tilt {
+    from { rotate: 0deg; }
+    to { rotate: var(--tilt); }
+}
+
+@keyframes burst {
+    0% { translate: 0 0; scale: 0; opacity: 1; }
+    100% { translate: calc(var(--ax) * var(--d)) calc(var(--ay) * var(--d) * 0.55); scale: 1; opacity: 1; }
+}
+
+@keyframes cut-col {
+    0% { transform: scaleY(0); transform-origin: 50% 0; }
+    35%, 65% { transform: scaleY(1); transform-origin: 50% 0; }
+    65.01% { transform: scaleY(1); transform-origin: 50% 100%; }
+    100% { transform: scaleY(0); transform-origin: 50% 100%; }
+}
+
+@keyframes cut-row {
+    0% { transform: scaleX(0); transform-origin: 0 50%; }
+    35%, 65% { transform: scaleX(1); transform-origin: 0 50%; }
+    65.01% { transform: scaleX(1); transform-origin: 100% 50%; }
+    100% { transform: scaleX(0); transform-origin: 100% 50%; }
+}
+
+@keyframes wipe-again {
+    0% { transform: scaleX(0); transform-origin: 0 50%; }
+    7% { transform: scaleX(1); transform-origin: 0 50%; }
+    7.01% { transform: scaleX(1); transform-origin: 100% 50%; }
+    14%, 100% { transform: scaleX(0); transform-origin: 100% 50%; }
+}
+
+@keyframes shine {
+    0% { background-position: 150% 0; }
+    55%, 100% { background-position: -50% 0; }
+}
+
+@keyframes clap-loop {
+    0%, 82%, 100% { transform: rotate(0deg); }
+    90% { transform: rotate(-28deg); }
+}
+
+@keyframes orbit {
+    0%, 100% { translate: 0 0; }
+    25% { translate: 18px 26px; }
+    50% { translate: -4px 44px; }
+    75% { translate: -20px 16px; }
+}
+
+@keyframes chip-hop {
+    0%, 55% { translate: 0 0; rotate: 0deg; }
+    70% { translate: 0 -6px; rotate: 180deg; }
+    85%, 100% { translate: 0 0; rotate: 360deg; }
+}
+
+@keyframes grid-pan {
+    to { background-position: 40px 40px, 40px 40px; }
+}
+
+@keyframes role-orbit {
+    0%, 24% { top: 44%; left: 50%; scale: 1.7; rotate: 0deg; z-index: 2; }
+    12% { scale: 1.55; }
+    33%, 57% { top: 72%; left: 80%; scale: 0.7; rotate: 90deg; z-index: 1; }
+    66%, 90% { top: 72%; left: 20%; scale: 0.7; rotate: 180deg; z-index: 1; }
+    100% { top: 44%; left: 50%; scale: 1.7; rotate: 360deg; z-index: 2; }
+}
+
+@keyframes role-caption {
+    0% { opacity: 0; translate: 0 50%; }
+    5%, 26% { opacity: 1; translate: 0 0; }
+    31%, 100% { opacity: 0; translate: 0 -50%; }
+}
+
+@keyframes film-run {
+    to { -webkit-mask-position: -30px 0; mask-position: -30px 0; }
+}
+
+@keyframes frame-float {
+    from { transform: translateY(-5px); }
+    to { transform: translateY(5px); }
+}
+
+@keyframes stamp-thump {
+    0%, 14%, 100% { scale: 1; }
+    5% { scale: 1.22; }
+}
+
+@keyframes talk-wave {
+    0%, 100% { font-variation-settings: "wdth" 92; color: var(--fg); }
+    50% { font-variation-settings: "wdth" 125; color: var(--c); }
+}
+
+@keyframes credits-roll {
+    to { transform: translateY(-50%); }
+}
+
 /* ==========================================================================
    반응형
    ========================================================================== */
@@ -3298,9 +3785,7 @@ body::after {
         padding-top: 1rem;
     }
 
-    /* 좁은 화면에서는 좌우로 밀리는 폭을 여백(16px) 안으로 줄임 */
     .k-inner {
-        --k-shift: -6vw;
         grid-template-columns: minmax(0, 1fr) auto;
         grid-template-areas:
             "cat glyph"
