@@ -5,7 +5,7 @@
    화면 가장자리에는 뷰파인더 모서리·타임코드·타임라인 스크러버(HUD)를 띄운다.
 
    애니메이션 원칙: 요소의 기본 스타일이 "완성된 화면"이고, 키프레임은 거기서
-   벗어난 시작 상태만 적는다. 모션을 끄면(prefers-reduced-motion) 완성 화면이 그대로 보인다.
+   벗어난 시작 상태만 적는다. 애니메이션이 돌지 못하는 환경에서도 완성 화면이 그대로 보인다.
    ========================================================================== */
 
 /* 레이아웃: 장면(scene) 단위 세로 릴 + 고정 HUD. 다크가 기본, 라이트는 같은 토큰 값만 바꿈 */
@@ -102,10 +102,6 @@
     --stamp: #c8291f;
     --stamp-alt: #2742d4;
     color-scheme: light;
-}
-
-:root.no-leader {
-    --intro: 0s;
 }
 
 /* ---------- 리셋 ---------- */
@@ -286,10 +282,6 @@ body::after {
     animation: leader-out 0.5s var(--ease-io) calc(var(--intro) - 0.25s) forwards;
 }
 
-:root.no-leader .leader {
-    display: none;
-}
-
 .leader-bars {
     position: absolute;
     inset: 0;
@@ -465,36 +457,6 @@ body::after {
 
 :root.is-paused .hud-play .i-play {
     display: block;
-}
-
-/* 멈춘 화면으로 시작한 경우(.still): 눈에 띄는 노란 "▶ 재생" 버튼으로 */
-:root.still .hud-play {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    width: auto;
-    height: 34px;
-    padding: 0 0.95rem 0 0.8rem;
-    border-color: var(--bar-yellow);
-    border-radius: 999px;
-    background: var(--bar-yellow);
-    color: var(--on-bar);
-}
-
-:root.still .hud-play .i-play,
-:root.still .hud-play-label {
-    display: block;
-}
-
-:root.still .hud-play .i-pause {
-    display: none;
-}
-
-.hud-play-label {
-    display: none;
-    font: 700 0.8rem/1 var(--f-body);
-    letter-spacing: 0;
-    text-transform: none;
 }
 
 /* 일시정지: 화면의 모든 CSS 애니메이션을 그 자리에서 멈춤 (오프닝은 예외) */
@@ -3844,19 +3806,11 @@ body::after {
 }
 
 /* ==========================================================================
-   모션 줄이기: 애니메이션을 모두 끄고 완성된 화면만 보여줌
+   기기에서 '애니메이션 줄이기'를 켠 경우에도 모션그래픽은 그대로 재생하고,
+   메뉴를 눌렀을 때의 부드러운 스크롤만 끔 (멈추고 싶으면 하단 ❚❚ 버튼)
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
     }
-}
-
-/* 멈춘 화면: 기기의 '애니메이션 줄이기' 설정을 따라 움직임을 모두 끄고 완성된 화면만 보여줌.
-   하단 재생 버튼을 누르면 main.js가 .still을 떼고 재생을 시작함 */
-:root.still *,
-:root.still *::before,
-:root.still *::after {
-    animation: none !important;
-    transition: none !important;
 }

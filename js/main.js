@@ -1,14 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    // 기기에서 '애니메이션 줄이기'를 켰으면 <head>의 스크립트가 .still을 붙여 둠.
-    // 그때는 멈춘 화면으로 시작하고, 하단 재생 버튼을 누르면 startMotion()으로 켬
-    let motion = !root.classList.contains('still');
     const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
     const pad = n => String(n).padStart(2, '0');
-    // <head>의 스크립트가 오프닝 재생 여부를 정해 둠 (CSS의 --intro와 같은 값)
-    const introMs = root.classList.contains('no-leader') ? 0 : 1450;
+    // 오프닝(컬러바·카운트다운) 길이. CSS의 --intro와 같은 값
+    const introMs = 1450;
 
     // ---------------------------------------------
     // 1. 스크롤 등장 — [data-reveal]이 화면에 들어오면 .is-in
@@ -16,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------
     const revealEls = document.querySelectorAll('[data-reveal]');
 
-    if (motion && 'IntersectionObserver' in window) {
+    if ('IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (!entry.isIntersecting) return;
@@ -63,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try { localStorage.setItem('reel-theme', next); } catch (e) {}
             const apply = () => root.setAttribute('data-theme', next);
 
-            if (!document.startViewTransition || !motion || document.visibilityState !== 'visible') {
+            if (!document.startViewTransition || document.visibilityState !== 'visible') {
                 apply();
                 return;
             }
@@ -99,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hudScene = document.getElementById('hudScene');
     const sceneVisible = new Map();
     const isVisible = el => !!el && sceneVisible.get(el) !== false;
-    let offscreenObserver = null;
 
     if ('IntersectionObserver' in window) {
         const spyObserver = new IntersectionObserver((entries) => {
@@ -113,15 +108,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { rootMargin: '-45% 0px -50% 0px' });
 
-        // 화면에서 벗어난 장면은 CSS 애니메이션과 JS 루프를 멈춰 둠 (startMotion에서 관찰 시작)
-        offscreenObserver = new IntersectionObserver((entries) => {
+        // 화면에서 벗어난 장면은 CSS 애니메이션과 JS 루프를 멈춰 둠
+        const offscreenObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 sceneVisible.set(entry.target, entry.isIntersecting);
                 entry.target.classList.toggle('is-offscreen', !entry.isIntersecting);
             });
         }, { rootMargin: '120px 0px' });
 
-        scenes.forEach(scene => spyObserver.observe(scene));
+        scenes.forEach(scene => {
+            spyObserver.observe(scene);
+            offscreenObserver.observe(scene);
+        });
     }
 
     // ---------------------------------------------
@@ -129,32 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------
     const playToggle = document.getElementById('playToggle');
     const hudState = document.getElementById('hudState');
-    let playing = motion;
+    let playing = true;
 
     function setPlaying(next) {
         playing = next;
-        root.classList.toggle('is-paused', motion && !next);
+        root.classList.toggle('is-paused', !next);
         if (playToggle) playToggle.setAttribute('aria-label', next ? '움직임 일시정지' : '움직임 재생');
         if (hudState) hudState.textContent = next ? 'REC' : 'Paused';
     }
 
-    // '애니메이션 줄이기' 기기에서 재생을 고르면 이 기기에 기억해 두고 다음부터 바로 재생
-    function rememberMotion(on) {
-        if (!prefersReduced) return;
-        try {
-            if (on) localStorage.setItem('reel-motion', 'play');
-            else localStorage.removeItem('reel-motion');
-        } catch (e) {}
-    }
-
-    if (playToggle) {
-        playToggle.addEventListener('click', () => {
-            if (!motion) startMotion();
-            setPlaying(!playing);
-            rememberMotion(playing);
-        });
-    }
-    setPlaying(playing);
+    if (playToggle) playToggle.addEventListener('click', () => setPlaying(!playing));
 
     // ---------------------------------------------
     // 5. 히어로 샷 시퀀스 — ILHOON → EDUCATOR → DEVELOPER → CREATOR를 컬러바 전환으로 반복
@@ -351,9 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 모션을 끈 경우: 마지막(NOW) 레이어를 켜 둔 완성 상태로
-    if (!motion) tlLayers.forEach(layer => layer.classList.toggle('is-active', layer.classList.contains('is-now')));
-
     // ---------------------------------------------
     // 8. 엔딩 크레딧 — 목록을 한 번 더 이어 붙여 끝없이 올라가게
     // ---------------------------------------------
@@ -407,12 +386,12 @@ document.addEventListener('DOMContentLoaded', () => {
         nav.classList.toggle('is-scrolled', y > 24);
         markers.forEach(marker => marker.el.classList.toggle('is-passed', progress >= marker.at - 0.002));
         // 히어로는 스크롤하면 위로 빠지며 흐려짐
-        if (motion && hero) hero.style.setProperty('--hp', clamp(y / (hero.offsetHeight * 0.85)).toFixed(4));
+        if (hero) hero.style.setProperty('--hp', clamp(y / (hero.offsetHeight * 0.85)).toFixed(4));
     }
 
     function measure() {
         vh = window.innerHeight;
-        if (motion) kRows.forEach(buildSkillTrack);
+        kRows.forEach(buildSkillTrack);
         marquees.forEach(item => {
             item.half = item.track.scrollWidth / 2;
             item.x = 0;
@@ -514,31 +493,29 @@ document.addEventListener('DOMContentLoaded', () => {
             lastY = y;
         }
 
-        if (motion) {
-            velocity = velocity * 0.86 + dy * 0.14;
+        velocity = velocity * 0.86 + dy * 0.14;
 
-            // 빠르게 스크롤하면 스킬 글자가 진행 방향으로 기울어짐
-            const skew = clamp(velocity * -0.25, -9, 9);
-            if (kinetic && Math.abs(skew - lastSkew) > 0.02) {
-                kinetic.style.setProperty('--skew', skew.toFixed(2));
-                lastSkew = skew;
-            }
-
-            if (playing) {
-                playClock += dt;
-                if (stage && isVisible(hero)) updateShots(dt);
-                updateMarquees(dt, 1 + Math.min(Math.abs(velocity) * 0.12, 6));
-                if (timeline && timeline.classList.contains('is-in') && isVisible(about)) updateTimeline(dt);
-            }
-
-            const frameNo = Math.floor((playClock / 1000) * FPS);
-            if (timecode && frameNo !== lastFrameNo) {
-                timecode.textContent = formatTimecode(frameNo);
-                lastFrameNo = frameNo;
-            }
-
-            updatePointerEffects();
+        // 빠르게 스크롤하면 스킬 글자가 진행 방향으로 기울어짐
+        const skew = clamp(velocity * -0.25, -9, 9);
+        if (kinetic && Math.abs(skew - lastSkew) > 0.02) {
+            kinetic.style.setProperty('--skew', skew.toFixed(2));
+            lastSkew = skew;
         }
+
+        if (playing) {
+            playClock += dt;
+            if (stage && isVisible(hero)) updateShots(dt);
+            updateMarquees(dt, 1 + Math.min(Math.abs(velocity) * 0.12, 6));
+            if (timeline && timeline.classList.contains('is-in') && isVisible(about)) updateTimeline(dt);
+        }
+
+        const frameNo = Math.floor((playClock / 1000) * FPS);
+        if (timecode && frameNo !== lastFrameNo) {
+            timecode.textContent = formatTimecode(frameNo);
+            lastFrameNo = frameNo;
+        }
+
+        updatePointerEffects();
 
         requestAnimationFrame(tick);
     }
@@ -562,26 +539,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
-    // ---------------------------------------------
-    // 움직임 켜기 — 처음부터 재생하는 경우, 또는 멈춘 화면에서 재생 버튼을 눌렀을 때 한 번 실행
-    // ---------------------------------------------
-    let motionReady = false;
-
-    function startMotion() {
-        motion = true;
-        if (motionReady) return;
-        motionReady = true;
-        root.classList.remove('still');
-        root.classList.add('motion');
-        if (offscreenObserver) scenes.forEach(scene => offscreenObserver.observe(scene));
-        setupSkillMarquees();
-        setupCredits();
-        if (finePointer) setupPointer();
-        measure();
-    }
-
-    if (motion) startMotion();
-    else measure();
+    // 기기 설정(애니메이션 줄이기 등)과 상관없이 누구에게나 열자마자 재생
+    setupSkillMarquees();
+    setupCredits();
+    if (finePointer) setupPointer();
+    measure();
     requestAnimationFrame(tick);
 
     // ---------------------------------------------
@@ -638,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function closeModal() {
             modal.classList.remove('is-open');
             document.body.classList.remove('modal-open');
-            modalTimer = setTimeout(() => { modal.hidden = true; }, motion ? 400 : 0);
+            modalTimer = setTimeout(() => { modal.hidden = true; }, 400);
             if (lastTrigger) lastTrigger.focus({ preventScroll: true });
         }
 
