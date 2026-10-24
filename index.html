@@ -2,275 +2,453 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>서일훈 | Portfolio</title>
     <meta name="description" content="교사이자 개발자 서일훈의 포트폴리오">
-    <meta name="theme-color" content="#eef2f7">
+    <meta name="theme-color" content="#0e0f13">
 
-    <!-- 테마 결정: 첫 화면이 그려지기 전에 적용해서 깜빡임을 막음 -->
+    <!-- 첫 화면이 그려지기 전에 정함: 라이트/다크, 오프닝(컬러바·카운트다운) 재생 여부, 모션 사용 여부 -->
     <script>
         (function () {
-            var themes = ['liquid', 'aurora', 'editorial', 'clay', 'acid'];
-            var theme = null;
-            try { theme = new URLSearchParams(location.search).get('theme'); } catch (e) {}
-            if (themes.indexOf(theme) < 0) {
-                try { theme = sessionStorage.getItem('portfolio-theme'); } catch (e) {}
+            var root = document.documentElement;
+            var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+            try {
+                var saved = localStorage.getItem('reel-theme');
+                if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+            } catch (e) {}
+            // 오프닝은 세션마다 한 번만 재생
+            var seen = null;
+            try {
+                seen = sessionStorage.getItem('reel-leader-seen');
+                sessionStorage.setItem('reel-leader-seen', '1');
+            } catch (e) {}
+            if (reduce || seen) root.classList.add('no-leader');
+            if (!reduce) {
+                root.classList.add('motion');
+                // main.js가 준비되지 않으면 스크롤 등장 효과를 꺼서 내용이 숨겨진 채로 남지 않게 함
+                setTimeout(function () {
+                    if (!window.__reelReady) root.classList.remove('motion');
+                }, 4000);
             }
-            if (themes.indexOf(theme) < 0) {
-                theme = themes[Math.floor(Math.random() * themes.length)];
-            }
-            document.documentElement.setAttribute('data-theme', theme);
-            document.documentElement.classList.add('js');
         })();
     </script>
 
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@500;700;800&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
     <!-- CSS/JS를 고치면 ?v= 값을 바꿔야 휴대폰에 남아 있는 예전 파일 대신 새 파일을 받음 -->
-    <link rel="stylesheet" href="css/style.css?v=20261013-2">
-    <link rel="stylesheet" href="css/themes.css?v=20261013-2">
+    <link rel="stylesheet" href="css/style.css?v=20261024-reel">
 </head>
 <body>
-    <!-- 테마별 배경 레이어 (빛 번짐 / 그리드 / 노이즈) -->
-    <div class="page-bg" aria-hidden="true">
-        <span class="blob blob-1"></span>
-        <span class="blob blob-2"></span>
-        <span class="blob blob-3"></span>
-        <span class="bg-grid"></span>
-        <span class="bg-grain"></span>
+    <a class="skip-link" href="#about">본문 바로가기</a>
+
+    <!-- 오프닝: 컬러바 → 3·2·1 카운트다운. CSS만으로 재생되고 스스로 사라짐 -->
+    <div class="leader" aria-hidden="true">
+        <div class="leader-count">
+            <svg class="leader-dial" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="92"></circle>
+                <circle cx="100" cy="100" r="74"></circle>
+                <line x1="100" y1="0" x2="100" y2="200"></line>
+                <line x1="0" y1="100" x2="200" y2="100"></line>
+            </svg>
+            <span class="leader-sweep"></span>
+            <span class="leader-num"><b>3</b><b>2</b><b>1</b></span>
+        </div>
+        <p class="leader-label">ILHOON SEO · PORTFOLIO REEL · 24 FPS</p>
+        <div class="leader-bars">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
     </div>
 
-    <!-- 스크롤 진행 상황 표시 바 -->
-    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <!-- 뷰파인더 모서리 -->
+    <div class="hud" aria-hidden="true">
+        <span class="hud-corner tl"></span>
+        <span class="hud-corner tr"></span>
+        <span class="hud-corner bl"></span>
+        <span class="hud-corner br"></span>
+    </div>
 
-    <!-- 플로팅 네비게이션 -->
+    <!-- 네비게이션 -->
     <header class="nav" id="nav">
         <div class="nav-inner">
             <a href="#home" class="nav-logo" aria-label="맨 위로">
-                <span class="logo-mark">IS</span>
+                <span class="logo-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
                 <span class="logo-text">ILHOON</span>
             </a>
             <nav class="nav-links" aria-label="주요 메뉴">
-                <a href="#home">Home</a>
-                <a href="#about">About Me</a>
-                <a href="#skills">Skills</a>
-                <a href="#webapps">Portfolio</a>
-                <a href="#contact">Contact</a>
+                <a href="#about"><span>01</span>About Me</a>
+                <a href="#skills"><span>02</span>Skills</a>
+                <a href="#webapps"><span>03</span>Portfolio</a>
+                <a href="#portfolio"><span>04</span>Awards</a>
+                <a href="#contact"><span>05</span>Contact</a>
             </nav>
-            <button class="hamburger" id="hamburger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
-                <span></span>
-                <span></span>
-            </button>
+            <div class="nav-actions">
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="라이트 모드로 전환">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 0 18z"></path></svg>
+                </button>
+                <button class="hamburger" id="hamburger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-        <nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
-            <a href="#home"><span>01</span>Home</a>
-            <a href="#about"><span>02</span>About Me</a>
-            <a href="#skills"><span>03</span>Skills</a>
-            <a href="#webapps"><span>04</span>Portfolio</a>
-            <a href="#contact"><span>05</span>Contact</a>
-        </nav>
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-bars" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <nav class="mobile-menu-links" aria-label="모바일 메뉴">
+                <a href="#home"><span>00</span>Home</a>
+                <a href="#about"><span>01</span>About Me</a>
+                <a href="#skills"><span>02</span>Skills</a>
+                <a href="#webapps"><span>03</span>Portfolio</a>
+                <a href="#portfolio"><span>04</span>Awards</a>
+                <a href="#contact"><span>05</span>Contact</a>
+            </nav>
+        </div>
     </header>
 
     <main>
-        <!-- 히어로 섹션 -->
-        <section id="home" class="hero">
+        <!-- SC.00 타이틀 -->
+        <section id="home" class="hero" data-scene="SC.00 Title">
+            <div class="safe-guides" aria-hidden="true">
+                <span class="safe safe-action"><em>Action safe</em></span>
+                <span class="safe safe-title"><em>Title safe</em></span>
+            </div>
+
+            <div class="hero-shapes" aria-hidden="true">
+                <span class="shape s-circle" style="--depth: 26; --n: 0"><i></i></span>
+                <span class="shape s-ring" style="--depth: -34; --n: 1"><i></i></span>
+                <span class="shape s-square" style="--depth: -18; --n: 2"><i></i></span>
+                <span class="shape s-half" style="--depth: 40; --n: 3"><i></i></span>
+                <span class="shape s-plus" style="--depth: 22; --n: 4"><i></i></span>
+                <span class="shape s-squiggle" style="--depth: -14; --n: 5"><i><svg viewBox="0 0 124 28"><path pathLength="100" d="M4 14 Q 14 2 24 14 T 44 14 T 64 14 T 84 14 T 104 14 T 120 14"></path></svg></i></span>
+                <span class="shape s-dots" style="--depth: 10; --n: 6"><i></i></span>
+            </div>
+
             <div class="hero-inner container">
-                <h1 class="hero-title reveal" style="--d: 1">
-                    <span class="hero-line">ILHOON</span>
-                    <span class="hero-line"><em>Portfolio</em></span>
+                <div class="hero-meta">
+                    <span>SC.00 — Title</span>
+                    <span>16:9 · 24 FPS</span>
+                </div>
+
+                <h1 class="hero-title">
+                    <span class="sr-only">ILHOON Portfolio</span>
+                    <span class="hero-word" id="heroWord" aria-hidden="true">
+                        <span class="ch" style="--i: 0"><span>I</span></span>
+                        <span class="ch" style="--i: 1"><span>L</span></span>
+                        <span class="ch" style="--i: 2"><span>H</span></span>
+                        <span class="ch" style="--i: 3"><span>O</span></span>
+                        <span class="ch" style="--i: 4"><span>O</span></span>
+                        <span class="ch" style="--i: 5"><span>N</span></span>
+                    </span>
+                    <span class="hero-sub" aria-hidden="true">
+                        <span class="hero-rule"></span>
+                        <span class="hero-portfolio">Portfolio</span>
+                    </span>
                 </h1>
-                <p class="hero-subtitle reveal" style="--d: 2">
-                    I AM <span class="typing-article">AN</span> <span class="typing-text"></span>
+
+                <p class="hero-role">
+                    <span class="sr-only">I am an Educator, Software Developer, Innovative Creator</span>
+                    <span class="role-line" aria-hidden="true">I AM <span class="role-article" id="roleArticle">AN</span> <span class="role-roller" id="roleRoller">EDUCATOR</span><span class="role-caret"></span></span>
                 </p>
             </div>
 
-            <a href="#about" class="scroll-cue reveal" style="--d: 3" aria-label="아래로 스크롤">
-                <span>Scroll</span>
-                <span class="scroll-cue-line" aria-hidden="true"></span>
+            <a href="#about" class="hero-badge" aria-label="아래로 스크롤">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <defs><path id="badgePath" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"></path></defs>
+                    <text><textPath href="#badgePath" textLength="292" lengthAdjust="spacing">EDUCATOR · DEVELOPER · CREATOR · SCROLL ·</textPath></text>
+                </svg>
+                <span class="hero-badge-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 4v16M5 13l7 7 7-7"></path></svg>
+                </span>
             </a>
 
-            <div class="marquee" aria-hidden="true">
-                <div class="marquee-track">
-                    <span>Educator</span><span>Software Developer</span><span>Innovative Creator</span><span>AI융합교육</span><span>JavaScript</span><span>TypeScript</span><span>Unity3D</span>
-                    <span>Educator</span><span>Software Developer</span><span>Innovative Creator</span><span>AI융합교육</span><span>JavaScript</span><span>TypeScript</span><span>Unity3D</span>
+            <div class="ribbons" aria-hidden="true">
+                <div class="ribbon ribbon-a">
+                    <div class="ribbon-track" data-speed="0.55">
+                        <span>Educator</span><i></i><span>Software Developer</span><i></i><span>Innovative Creator</span><i></i><span>AI융합교육</span><i></i>
+                        <span>Educator</span><i></i><span>Software Developer</span><i></i><span>Innovative Creator</span><i></i><span>AI융합교육</span><i></i>
+                    </div>
+                </div>
+                <div class="ribbon ribbon-b">
+                    <div class="ribbon-track" data-speed="-0.4">
+                        <span>JavaScript</span><i></i><span>TypeScript</span><i></i><span>Unity3D</span><i></i><span>Git</span><i></i><span>Claude Code</span><i></i>
+                        <span>JavaScript</span><i></i><span>TypeScript</span><i></i><span>Unity3D</span><i></i><span>Git</span><i></i><span>Claude Code</span><i></i>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- About Me 섹션 (벤토 그리드) -->
-        <section id="about" class="section about">
+        <!-- SC.01 About Me -->
+        <section id="about" class="scene about" data-scene="SC.01 About Me">
             <div class="container">
-                <div class="section-head reveal">
-                    <span class="section-index">01</span>
-                    <h2 class="section-title">About <em>Me</em></h2>
-                </div>
+                <header class="slate" data-reveal>
+                    <div class="slate-meta">
+                        <span class="clapper" aria-hidden="true"><i></i><i></i></span>
+                        <span>SC.01</span><span class="slate-sep"></span><span>Profile</span>
+                    </div>
+                    <h2 class="scene-title"><span class="wipe">About</span> <span class="wipe">Me</span></h2>
+                </header>
 
-                <div class="bento">
-                    <figure class="tile tile-photo reveal">
-                        <img src="images/profile-web.jpg" alt="희망봉에서 찍은 서일훈 프로필 사진" loading="lazy" width="960" height="870">
+                <div class="about-grid">
+                    <figure class="photo" data-reveal data-scrub>
+                        <span class="photo-deco photo-deco-a" aria-hidden="true"></span>
+                        <span class="photo-deco photo-deco-b" aria-hidden="true"></span>
+                        <div class="photo-frame">
+                            <img src="images/profile-web.jpg" alt="희망봉에서 찍은 서일훈 프로필 사진" loading="lazy" width="960" height="870">
+                            <span class="photo-rec" aria-hidden="true"><span class="rec-dot"></span>REC</span>
+                            <span class="photo-corners" aria-hidden="true"></span>
+                        </div>
                         <figcaption class="photo-tag"><span class="pulse-dot"></span>Hello, I'm Ilhoon</figcaption>
                     </figure>
 
-                    <div class="tile tile-intro reveal" style="--d: 1">
-                        <span class="tile-label">Profile</span>
-                        <h3 class="intro-name">서일훈 <span>Ilhoon Seo</span></h3>
-                        <ul class="chip-row">
-                            <li class="chip"><i class="fa-solid fa-chalkboard-user"></i>Educator</li>
-                            <li class="chip"><i class="fa-solid fa-code"></i>Software Developer</li>
-                            <li class="chip"><i class="fa-solid fa-wand-magic-sparkles"></i>Innovative Creator</li>
+                    <div class="profile" data-reveal>
+                        <span class="label">Profile</span>
+                        <h3 class="profile-name">서일훈 <span>Ilhoon Seo</span></h3>
+                        <ul class="roles">
+                            <li style="--i: 0"><span class="role-shape shape-circle" aria-hidden="true"></span>Educator</li>
+                            <li style="--i: 1"><span class="role-shape shape-square" aria-hidden="true"></span>Software Developer</li>
+                            <li style="--i: 2"><span class="role-shape shape-tri" aria-hidden="true"></span>Innovative Creator</li>
                         </ul>
                     </div>
+                </div>
 
-                    <div class="tile tile-edu reveal" style="--d: 2">
-                        <span class="tile-label">Education</span>
-                        <ol class="timeline">
-                            <li>
-                                <strong>한국디지털미디어고</strong>
-                                <span>웹프로그래밍과</span>
-                            </li>
-                            <li>
-                                <strong>청주교육대학교</strong>
-                                <span>컴퓨터교육과</span>
-                            </li>
-                            <li>
-                                <strong>오사카교육대학교</strong>
-                                <span>교환학생</span>
-                            </li>
-                            <li class="is-now">
-                                <strong>청주교육대학원</strong>
-                                <span>AI융합교육 석사파견 中</span>
-                            </li>
-                        </ol>
+                <!-- 학력: 영상 편집 프로그램의 타임라인 패널처럼 -->
+                <div class="timeline" id="timeline" data-reveal>
+                    <div class="tl-head">
+                        <span class="label">Education</span>
+                        <span class="tl-ruler" aria-hidden="true"><em>Start</em><em>Now</em></span>
+                    </div>
+                    <ol class="tl-layers">
+                        <li class="tl-layer" data-start="0" data-end="0.3" style="--s: 0; --e: 0.3; --c: var(--bar-cyan); --n: 0">
+                            <span class="tl-idx" aria-hidden="true">1</span>
+                            <div class="tl-name"><strong>한국디지털미디어고</strong><span>웹프로그래밍과</span></div>
+                            <div class="tl-track" aria-hidden="true"><span class="tl-bar"><i class="kf"></i><i class="kf"></i></span></div>
+                        </li>
+                        <li class="tl-layer" data-start="0.27" data-end="0.6" style="--s: 0.27; --e: 0.6; --c: var(--bar-green); --n: 1">
+                            <span class="tl-idx" aria-hidden="true">2</span>
+                            <div class="tl-name"><strong>청주교육대학교</strong><span>컴퓨터교육과</span></div>
+                            <div class="tl-track" aria-hidden="true"><span class="tl-bar"><i class="kf"></i><i class="kf"></i></span></div>
+                        </li>
+                        <li class="tl-layer" data-start="0.44" data-end="0.56" style="--s: 0.44; --e: 0.56; --c: var(--bar-magenta); --n: 2">
+                            <span class="tl-idx" aria-hidden="true">3</span>
+                            <div class="tl-name"><strong>오사카교육대학교</strong><span>교환학생</span></div>
+                            <div class="tl-track" aria-hidden="true"><span class="tl-bar"><i class="kf"></i><i class="kf"></i></span></div>
+                        </li>
+                        <li class="tl-layer is-now" data-start="0.7" data-end="1" style="--s: 0.7; --e: 1; --c: var(--bar-yellow); --n: 3">
+                            <span class="tl-idx" aria-hidden="true">4</span>
+                            <div class="tl-name"><strong>청주교육대학원</strong><span>AI융합교육 석사파견 中</span></div>
+                            <div class="tl-track" aria-hidden="true"><span class="tl-bar"><i class="kf"></i><span class="tl-now">Now</span></span></div>
+                        </li>
+                    </ol>
+                    <div class="tl-scrub" aria-hidden="true"><span class="tl-playhead"></span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SC.02 Skills -->
+        <section id="skills" class="scene skills" data-scene="SC.02 Skills">
+            <div class="container">
+                <header class="slate" data-reveal>
+                    <div class="slate-meta">
+                        <span class="clapper" aria-hidden="true"><i></i><i></i></span>
+                        <span>SC.02</span><span class="slate-sep"></span><span>Toolkit</span>
+                    </div>
+                    <h2 class="scene-title"><span class="wipe">Skills</span> <span class="wipe">&amp; Tools</span></h2>
+                    <p class="scene-desc">주로 사용하는 언어와 도구입니다.</p>
+                </header>
+            </div>
+
+            <ul class="kinetic">
+                <li class="k-row" data-scrub style="--dir: 1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Frontend</span>
+                        <span class="k-name">JavaScript</span>
+                        <span class="k-glyph gl-circle" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: -1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Frontend</span>
+                        <span class="k-name">TypeScript</span>
+                        <span class="k-glyph gl-square" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: 1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Tools</span>
+                        <span class="k-name">Git</span>
+                        <span class="k-glyph gl-tri" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: -1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Tools</span>
+                        <span class="k-name">Unity3D</span>
+                        <span class="k-glyph gl-ring" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: 1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Tools</span>
+                        <span class="k-name">Codex</span>
+                        <span class="k-glyph gl-plus" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: -1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Tools</span>
+                        <span class="k-name">Antigravity</span>
+                        <span class="k-glyph gl-half" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <li class="k-row" data-scrub style="--dir: 1">
+                    <div class="k-inner container">
+                        <span class="k-cat">Tools</span>
+                        <span class="k-name">Claude Code</span>
+                        <span class="k-glyph gl-diamond" aria-hidden="true"></span>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- SC.03 Web Portfolio -->
+        <section id="webapps" class="scene webapps" data-scene="SC.03 Web Portfolio">
+            <div class="container">
+                <header class="slate" data-reveal>
+                    <div class="slate-meta">
+                        <span class="clapper" aria-hidden="true"><i></i><i></i></span>
+                        <span>SC.03</span><span class="slate-sep"></span><span>Works</span>
+                    </div>
+                    <h2 class="scene-title"><span class="wipe">Web</span> <span class="wipe">Portfolio</span></h2>
+                    <p class="scene-desc">직접 기획하고 개발한 웹 서비스입니다.</p>
+                </header>
+
+                <div class="works">
+                    <article class="work" data-reveal style="--rd: 0s">
+                        <div class="viewer">
+                            <!-- 해가 떠오르는 짧은 루프 애니메이션 -->
+                            <div class="viewer-screen mini-sun" aria-hidden="true">
+                                <span class="ms-sky"></span>
+                                <span class="ms-sun"></span>
+                                <span class="ms-cloud ms-cloud-1"></span>
+                                <span class="ms-cloud ms-cloud-2"></span>
+                                <span class="ms-hill ms-hill-1"></span>
+                                <span class="ms-hill ms-hill-2"></span>
+                                <span class="ms-clock">AM 08:40</span>
+                                <span class="ms-title">Good Morning</span>
+                            </div>
+                            <div class="viewer-bar" aria-hidden="true">
+                                <svg class="vb-play" viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"></path></svg>
+                                <span class="vb-track"><i class="vb-fill"></i><i class="vb-head"></i></span>
+                                <span class="vb-tc">LOOP 06s</span>
+                            </div>
+                        </div>
+                        <div class="work-body">
+                            <span class="label">Web App</span>
+                            <h3>오늘의 아침활동</h3>
+                            <p>학생들이 아침활동에 할 수 있는 웹 어플리케이션입니다. 교육 현장에서 매일 아침 아이들이 흥미로운 활동을 통해 하루를 열 수 있도록 설계되었습니다.</p>
+                            <div class="work-foot">
+                                <span class="work-url">todaysact.vercel.app</span>
+                                <a href="https://todaysact.vercel.app/" target="_blank" rel="noopener" class="btn" data-cursor="OPEN">바로가기
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="work" data-reveal style="--rd: 0.12s">
+                        <div class="viewer">
+                            <!-- 문자 초안이 만들어지는 짧은 루프 애니메이션 -->
+                            <div class="viewer-screen mini-chat" aria-hidden="true">
+                                <div class="mc-window">
+                                    <div class="mc-head"><i></i><i></i><i></i><span>AI 비서</span></div>
+                                    <div class="mc-body">
+                                        <div class="mc-msg mc-me"><span></span><span></span></div>
+                                        <div class="mc-msg mc-ai">
+                                            <span class="mc-typing"><i></i><i></i><i></i></span>
+                                            <span class="mc-line"></span><span class="mc-line"></span><span class="mc-line mc-line-short"></span>
+                                        </div>
+                                        <span class="mc-done"><i></i>생성 완료</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="viewer-bar" aria-hidden="true">
+                                <svg class="vb-play" viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"></path></svg>
+                                <span class="vb-track"><i class="vb-fill"></i><i class="vb-head"></i></span>
+                                <span class="vb-tc">LOOP 06s</span>
+                            </div>
+                        </div>
+                        <div class="work-body">
+                            <span class="label">Web App</span>
+                            <h3>교사용 문자 생성 챗봇</h3>
+                            <p>교사가 안내문이나 학부모용 알림 문자 메시지를 인공지능을 활용해 맞춤형으로 손쉽게 생성해주는 스마트한 AI 비서 챗봇 서비스입니다.</p>
+                            <div class="work-foot">
+                                <span class="work-url">mmft.vercel.app</span>
+                                <a href="https://mmft.vercel.app/" target="_blank" rel="noopener" class="btn" data-cursor="OPEN">바로가기
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- SC.04 Awards and Honors -->
+        <section id="portfolio" class="scene awards" data-scene="SC.04 Awards">
+            <div class="container">
+                <header class="slate" data-reveal>
+                    <div class="slate-meta">
+                        <span class="clapper" aria-hidden="true"><i></i><i></i></span>
+                        <span>SC.04</span><span class="slate-sep"></span><span>Honors</span>
+                    </div>
+                    <h2 class="scene-title"><span class="wipe">Awards</span> <span class="wipe">&amp; Honors</span></h2>
+                    <p class="scene-desc">카드를 누르면 자세한 내용을 볼 수 있어요.</p>
+                </header>
+            </div>
+
+            <!-- 필름 스트립: 스크롤하면 구멍(스프로킷)이 흘러감 -->
+            <div class="filmstrip" data-scrub>
+                <div class="container">
+                    <div class="frames">
+                        <button type="button" class="frame" data-award="awards1" data-reveal data-cursor="VIEW" style="--rd: 0s">
+                            <span class="frame-img"><img src="images/Awards1.jpg" alt="2016 전남 모바일 앱 공모전" loading="lazy"></span>
+                            <span class="frame-info">
+                                <span class="frame-year">2016</span>
+                                <strong>전남 모바일 앱 공모전</strong>
+                                <span class="frame-prize">우수상</span>
+                            </span>
+                            <span class="frame-more" aria-hidden="true">+ View</span>
+                        </button>
+
+                        <button type="button" class="frame" data-award="awards2" data-reveal data-cursor="VIEW" style="--rd: 0.1s">
+                            <span class="frame-img"><img src="images/Awards2.jpg" alt="2016 소프트웨어 교육 에듀톤" loading="lazy"></span>
+                            <span class="frame-info">
+                                <span class="frame-year">2016</span>
+                                <strong>소프트웨어 교육 에듀톤</strong>
+                                <span class="frame-prize">동상</span>
+                            </span>
+                            <span class="frame-more" aria-hidden="true">+ View</span>
+                        </button>
+
+                        <button type="button" class="frame" data-award="awards3" data-reveal data-cursor="VIEW" style="--rd: 0.2s">
+                            <span class="frame-img"><img src="images/Awards3.jpg" alt="멘사코리아 합격 증서" loading="lazy"></span>
+                            <span class="frame-info">
+                                <span class="frame-year">2020~</span>
+                                <strong>멘사코리아</strong>
+                                <span class="frame-prize">정회원</span>
+                            </span>
+                            <span class="frame-more" aria-hidden="true">+ View</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Skills 섹션 -->
-        <section id="skills" class="section skills">
             <div class="container">
-                <div class="section-head reveal">
-                    <span class="section-index">02</span>
-                    <h2 class="section-title">Skills <em>&amp; Tools</em></h2>
-                    <p class="section-desc">주로 사용하는 언어와 도구입니다.</p>
-                </div>
-
-                <div class="skills-grid">
-                    <article class="tile skill-card reveal">
-                        <div class="skill-head">
-                            <span class="tile-label">Frontend</span>
-                            <i class="fa-solid fa-code"></i>
-                        </div>
-                        <ul class="skill-list">
-                            <li><span class="skill-icon"><i class="fa-brands fa-js"></i></span>JavaScript</li>
-                            <li><span class="skill-icon skill-icon-text">TS</span>TypeScript</li>
-                        </ul>
-                    </article>
-
-                    <article class="tile skill-card skill-card-wide reveal" style="--d: 1">
-                        <div class="skill-head">
-                            <span class="tile-label">Tools</span>
-                            <i class="fa-solid fa-screwdriver-wrench"></i>
-                        </div>
-                        <ul class="skill-list">
-                            <li><span class="skill-icon"><i class="fa-brands fa-git-alt"></i></span>Git</li>
-                            <li><span class="skill-icon"><i class="fa-brands fa-unity"></i></span>Unity3D</li>
-                            <li><span class="skill-icon"><i class="fa-solid fa-terminal"></i></span>Codex</li>
-                            <li><span class="skill-icon"><i class="fa-solid fa-rocket"></i></span>Antigravity</li>
-                            <li><span class="skill-icon"><i class="fa-solid fa-asterisk"></i></span>Claude Code</li>
-                        </ul>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <!-- 내가 만든 웹 어플리케이션 섹션 -->
-        <section id="webapps" class="section webapps">
-            <div class="container">
-                <div class="section-head reveal">
-                    <span class="section-index">03</span>
-                    <h2 class="section-title">Web <em>Portfolio</em></h2>
-                    <p class="section-desc">직접 기획하고 개발한 웹 서비스입니다.</p>
-                </div>
-
-                <div class="projects">
-                    <article class="tile project-card reveal">
-                        <div class="project-top">
-                            <span class="project-num">01</span>
-                            <span class="project-icon"><i class="fa-solid fa-sun"></i></span>
-                        </div>
-                        <h3>오늘의 아침활동</h3>
-                        <p>학생들이 아침활동에 할 수 있는 웹 어플리케이션입니다. 교육 현장에서 매일 아침 아이들이 흥미로운 활동을 통해 하루를 열 수 있도록 설계되었습니다.</p>
-                        <div class="project-foot">
-                            <span class="project-url">todaysact.vercel.app</span>
-                            <a href="https://todaysact.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="tile project-card reveal" style="--d: 1">
-                        <div class="project-top">
-                            <span class="project-num">02</span>
-                            <span class="project-icon"><i class="fa-solid fa-comment-dots"></i></span>
-                        </div>
-                        <h3>교사용 문자 생성 챗봇</h3>
-                        <p>교사가 안내문이나 학부모용 알림 문자 메시지를 인공지능을 활용해 맞춤형으로 손쉽게 생성해주는 스마트한 AI 비서 챗봇 서비스입니다.</p>
-                        <div class="project-foot">
-                            <span class="project-url">mmft.vercel.app</span>
-                            <a href="https://mmft.vercel.app/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <!-- Awards and Honors 섹션 -->
-        <section id="portfolio" class="section awards">
-            <div class="container">
-                <div class="section-head reveal">
-                    <span class="section-index">04</span>
-                    <h2 class="section-title">Awards <em>&amp; Honors</em></h2>
-                    <p class="section-desc">카드를 누르면 자세한 내용을 볼 수 있어요.</p>
-                </div>
-
-                <div class="award-grid reveal">
-                    <button type="button" class="tile award-card" data-award="awards1">
-                        <img src="images/Awards1.jpg" alt="2016 전남 모바일 앱 공모전" loading="lazy">
-                        <span class="award-info">
-                            <span class="award-year">2016</span>
-                            <strong>전남 모바일 앱 공모전</strong>
-                            <span class="award-prize">우수상</span>
-                        </span>
-                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
-                    </button>
-
-                    <button type="button" class="tile award-card" data-award="awards2">
-                        <img src="images/Awards2.jpg" alt="2016 소프트웨어 교육 에듀톤" loading="lazy">
-                        <span class="award-info">
-                            <span class="award-year">2016</span>
-                            <strong>소프트웨어 교육 에듀톤</strong>
-                            <span class="award-prize">동상</span>
-                        </span>
-                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
-                    </button>
-
-                    <button type="button" class="tile award-card" data-award="awards3">
-                        <img src="images/Awards3.jpg" alt="멘사코리아 합격 증서" loading="lazy">
-                        <span class="award-info">
-                            <span class="award-year">2020~</span>
-                            <strong>멘사코리아</strong>
-                            <span class="award-prize">정회원</span>
-                        </span>
-                        <span class="award-more" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
-                    </button>
-                </div>
-
-                <div class="tile research-card reveal">
+                <div class="research" data-reveal>
                     <div class="research-head">
-                        <span class="tile-label">Research</span>
+                        <span class="label">Research</span>
                         <h3>연구대회 수상 실적</h3>
                     </div>
                     <ul class="research-list">
@@ -278,14 +456,14 @@
                             <span class="research-year">2024</span>
                             <div>
                                 <strong>제18회 디지털교육 연구대회(SW,AI)</strong>
-                                <span class="research-badges"><em>도 1등급</em><em>전국 3등급</em></span>
+                                <span class="stamps"><em class="stamp" style="--i: 0">도 1등급</em><em class="stamp stamp-alt" style="--i: 1">전국 3등급</em></span>
                             </div>
                         </li>
                         <li>
                             <span class="research-year">2025</span>
                             <div>
                                 <strong>디지털 활용업무개선 연구대회</strong>
-                                <span class="research-badges"><em>도 1등급</em></span>
+                                <span class="stamps"><em class="stamp" style="--i: 2">도 1등급</em></span>
                             </div>
                         </li>
                     </ul>
@@ -293,38 +471,88 @@
             </div>
         </section>
 
-        <!-- Contact 섹션 -->
-        <section id="contact" class="section contact">
+        <!-- SC.05 Contact -->
+        <section id="contact" class="scene contact" data-scene="SC.05 Contact">
             <div class="container">
-                <div class="section-head reveal">
-                    <span class="section-index">05</span>
-                    <h2 class="section-title">Contact <em>Me</em></h2>
-                    <p class="section-desc">언제든 편하게 연락 주세요.</p>
-                </div>
-
-                <div class="tile contact-card reveal">
-                    <p class="contact-kicker">Let's talk</p>
-                    <h3 class="contact-title">함께 <em>이야기</em>해요</h3>
-                    <div class="social-links">
-                        <a href="https://github.com/ilhoonseo" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <header class="slate" data-reveal>
+                    <div class="slate-meta">
+                        <span class="clapper" aria-hidden="true"><i></i><i></i></span>
+                        <span>SC.05</span><span class="slate-sep"></span><span>Contact</span>
                     </div>
+                    <h2 class="scene-title"><span class="wipe">Contact</span> <span class="wipe">Me</span></h2>
+                    <p class="scene-desc">언제든 편하게 연락 주세요.</p>
+                </header>
+
+                <div class="talk" data-reveal>
+                    <p class="talk-big" id="talkBig">
+                        <span class="sr-only">Let's talk</span>
+                        <span class="talk-word" aria-hidden="true">
+                            <span class="tc" style="--i: 0; --c: var(--bar-yellow)">L</span><span class="tc" style="--i: 1; --c: var(--bar-cyan)">E</span><span class="tc" style="--i: 2; --c: var(--bar-green)">T</span><span class="tc" style="--i: 3; --c: var(--bar-magenta)">’</span><span class="tc" style="--i: 4; --c: var(--bar-red)">S</span>
+                        </span>
+                        <span class="talk-word" aria-hidden="true">
+                            <span class="tc" style="--i: 5; --c: var(--bar-blue)">T</span><span class="tc" style="--i: 6; --c: var(--bar-yellow)">A</span><span class="tc" style="--i: 7; --c: var(--bar-cyan)">L</span><span class="tc" style="--i: 8; --c: var(--bar-magenta)">K</span>
+                        </span>
+                    </p>
+                    <h3 class="talk-title">함께 이야기해요</h3>
+
+                    <ul class="contact-links">
+                        <li>
+                            <a href="https://github.com/ilhoonseo" target="_blank" rel="noopener" data-cursor="OPEN">
+                                <span class="roll"><span data-text="GitHub">GitHub</span></span>
+                                <span class="handle">@ilhoonseo</span>
+                                <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/in/il-hoon-seo-a20870117/" target="_blank" rel="noopener" data-cursor="OPEN">
+                                <span class="roll"><span data-text="LinkedIn">LinkedIn</span></span>
+                                <span class="handle">il-hoon-seo</span>
+                                <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="footer">
-        <div class="container footer-inner">
-            <p>&copy; 2026 Ilhoon Portfolio. All Rights Reserved.</p>
-            <a href="#home" class="to-top">Top <i class="fa-solid fa-arrow-up"></i></a>
+    <!-- 엔딩 크레딧 -->
+    <footer class="credits" data-scene="End Credits" data-nav="contact">
+        <div class="container">
+            <div class="credits-roll" data-reveal>
+                <p class="label">End Credits</p>
+                <dl class="credits-list">
+                    <div><dt>Directed &amp; Developed by</dt><dd>서일훈 Ilhoon Seo</dd></div>
+                    <div><dt>Starring</dt><dd>Educator&nbsp;· Software Developer&nbsp;· Innovative Creator</dd></div>
+                    <div><dt>Made with</dt><dd>HTML&nbsp;· CSS&nbsp;· JavaScript</dd></div>
+                </dl>
+                <p class="credits-fin" aria-hidden="true">FIN</p>
+            </div>
+            <div class="footer-bar">
+                <p>&copy; 2026 Ilhoon Portfolio. All Rights Reserved.</p>
+                <a href="#home" class="to-top">Back to top
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"></path></svg>
+                </a>
+            </div>
         </div>
     </footer>
 
+    <!-- 하단 HUD: 현재 장면 · 타임라인 스크러버(스크롤 진행) · 타임코드 -->
+    <div class="hud-bar" id="hudBar">
+        <div class="hud-scene" aria-hidden="true"><span class="rec-dot"></span><span class="hud-rec">REC</span><span class="hud-scene-name" id="hudScene">SC.00 Title</span></div>
+        <div class="scrubber" id="scrubber" aria-hidden="true">
+            <span class="scrubber-track"><span class="scrubber-fill"></span></span>
+            <span class="scrubber-head"></span>
+        </div>
+        <div class="hud-tc" aria-hidden="true"><span>TC</span><span id="timecode">00:00:00:00</span></div>
+    </div>
+
     <!-- 수상 상세 정보 모달 -->
-    <div class="modal" id="awardModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal" id="awardModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
         <div class="modal-content">
-            <button type="button" class="modal-close" id="modalClose" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="modal-close" id="modalClose" aria-label="닫기">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+            </button>
             <img src="" alt="수상 이미지" class="modal-img" id="modalImg">
             <h3 class="modal-title" id="modalTitle"></h3>
             <p class="modal-subtitle" id="modalSubtitle"></p>
@@ -332,23 +560,6 @@
         </div>
     </div>
 
-    <!-- 테마 선택 독 -->
-    <div class="theme-dock" id="themeDock">
-        <button type="button" class="theme-dock-toggle" id="themeDockToggle" aria-label="테마 선택 열기" aria-expanded="false">
-            <i class="fa-solid fa-palette"></i>
-        </button>
-        <div class="theme-dock-panel" role="group" aria-label="테마 선택">
-            <button type="button" class="theme-swatch" data-theme="liquid" aria-label="리퀴드 글래스" title="리퀴드 글래스"></button>
-            <button type="button" class="theme-swatch" data-theme="aurora" aria-label="오로라 나이트" title="오로라 나이트"></button>
-            <button type="button" class="theme-swatch" data-theme="editorial" aria-label="스위스 에디토리얼" title="스위스 에디토리얼"></button>
-            <button type="button" class="theme-swatch" data-theme="clay" aria-label="소프트 클레이" title="소프트 클레이"></button>
-            <button type="button" class="theme-swatch" data-theme="acid" aria-label="애시드 Y2K" title="애시드 Y2K"></button>
-            <span class="theme-dock-divider" aria-hidden="true"></span>
-            <button type="button" class="theme-shuffle" id="themeShuffle" aria-label="랜덤 테마" title="랜덤 테마"><i class="fa-solid fa-shuffle"></i></button>
-        </div>
-    </div>
-    <div class="theme-toast" id="themeToast" role="status" aria-live="polite"></div>
-
-    <script src="js/main.js?v=20261013-2"></script>
+    <script src="js/main.js?v=20261024-reel"></script>
 </body>
 </html>
