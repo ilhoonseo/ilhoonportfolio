@@ -16,8 +16,13 @@
                 var saved = localStorage.getItem('reel-theme');
                 if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
             } catch (e) {}
-            if (reduce) root.classList.add('no-leader');
-            if (!reduce) {
+            // 기기에서 '애니메이션 줄이기'를 켠 경우: 멈춘 화면(.still)으로 시작.
+            // 이 기기에서 재생 버튼을 누른 적이 있으면 처음부터 재생
+            var optIn = false;
+            try { optIn = localStorage.getItem('reel-motion') === 'play'; } catch (e) {}
+            if (reduce && !optIn) {
+                root.classList.add('no-leader', 'still');
+            } else {
                 root.classList.add('motion');
                 // main.js가 준비되지 않으면 스크롤 등장 효과를 꺼서 내용이 숨겨진 채로 남지 않게 함
                 setTimeout(function () {
@@ -31,7 +36,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
     <!-- CSS/JS를 고치면 ?v= 값을 바꿔야 휴대폰에 남아 있는 예전 파일 대신 새 파일을 받음 -->
-    <link rel="stylesheet" href="css/style.css?v=20261024-play">
+    <link rel="stylesheet" href="css/style.css?v=20261024-play2">
 </head>
 <body>
     <a class="skip-link" href="#about">본문 바로가기</a>
@@ -611,6 +616,7 @@
             <button type="button" class="hud-play" id="playToggle" aria-label="움직임 일시정지">
                 <svg class="i-pause" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5h2.4v9H2.5zM7.1 1.5h2.4v9H7.1z"></path></svg>
                 <svg class="i-play" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.3l7.5 4.7L3 10.7z"></path></svg>
+                <span class="hud-play-label">재생</span>
             </button>
             <span class="rec-dot" aria-hidden="true"></span><span class="hud-rec" id="hudState" aria-hidden="true">REC</span><span class="hud-scene-name" id="hudScene" aria-hidden="true">SC.00 Title</span>
         </div>
@@ -634,6 +640,6 @@
         </div>
     </div>
 
-    <script src="js/main.js?v=20261024-play"></script>
+    <script src="js/main.js?v=20261024-play2"></script>
 </body>
 </html>

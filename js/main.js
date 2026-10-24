@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.documentElement;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const motion = !reduceMotion;
+    // 기기에서 '애니메이션 줄이기'를 켰으면 <head>의 스크립트가 .still을 붙여 둠.
+    // 그때는 멈춘 화면으로 시작하고, 하단 재생 버튼을 누르면 startMotion()으로 켬
+    let motion = !root.classList.contains('still');
     const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
     const pad = n => String(n).padStart(2, '0');
     // <head>의 스크립트가 오프닝 재생 여부를 정해 둠 (CSS의 --intro와 같은 값)
@@ -97,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hudScene = document.getElementById('hudScene');
     const sceneVisible = new Map();
     const isVisible = el => !!el && sceneVisible.get(el) !== false;
+    let offscreenObserver = null;
 
     if ('IntersectionObserver' in window) {
         const spyObserver = new IntersectionObserver((entries) => {
@@ -110,18 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { rootMargin: '-45% 0px -50% 0px' });
 
-        // 화면에서 벗어난 장면은 CSS 애니메이션과 JS 루프를 멈춰 둠
-        const offscreenObserver = new IntersectionObserver((entries) => {
+        // 화면에서 벗어난 장면은 CSS 애니메이션과 JS 루프를 멈춰 둠 (startMotion에서 관찰 시작)
+        offscreenObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 sceneVisible.set(entry.target, entry.isIntersecting);
                 entry.target.classList.toggle('is-offscreen', !entry.isIntersecting);
             });
         }, { rootMargin: '120px 0px' });
 
-        scenes.forEach(scene => {
-            spyObserver.observe(scene);
-            if (motion) offscreenObserver.observe(scene);
-        });
+        scenes.forEach(scene => spyObserver.observe(scene));
     }
 
     // ---------------------------------------------
@@ -133,15 +133,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setPlaying(next) {
         playing = next;
-        root.classList.toggle('is-paused', !next);
-        playToggle.setAttribute('aria-label', next ? '움직임 일시정지' : '움직임 재생');
+        root.classList.toggle('is-paused', motion && !next);
+        if (playToggle) playToggle.setAttribute('aria-label', next ? '움직임 일시정지' : '움직임 재생');
         if (hudState) hudState.textContent = next ? 'REC' : 'Paused';
     }
 
-    if (playToggle) {
-        if (motion) playToggle.addEventListener('click', () => setPlaying(!playing));
-        else playToggle.hidden = true;
+    // '애니메이션 줄이기' 기기에서 재생을 고르면 이 기기에 기억해 두고 다음부터 바로 재생
+    function rememberMotion(on) {
+        if (!prefersReduced) return;
+        try {
+            if (on) localStorage.setItem('reel-motion', 'play');
+            else localStorage.removeItem('reel-motion');
+        } catch (e) {}
     }
+
+    if (playToggle) {
+        playToggle.addEventListener('click', () => {
+            if (!motion) startMotion();
+            setPlaying(!playing);
+            rememberMotion(playing);
+        });
+    }
+    setPlaying(playing);
 
     // ---------------------------------------------
     // 5. 히어로 샷 시퀀스 — ILHOON → EDUCATOR → DEVELOPER → CREATOR를 컬러바 전환으로 반복
@@ -291,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return track;
     }
 
-    if (motion) {
+    function setupSkillMarquees() {
         kRows.forEach((row, i) => {
             row.classList.add('is-marquee');
             const item = { track: buildSkillTrack(row), area: skills, speed: (i % 2 ? -1 : 1) * (36 + (i % 3) * 10), x: 0, half: 0, mul: 1, targetMul: 1, row };
@@ -345,7 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. 엔딩 크레딧 — 목록을 한 번 더 이어 붙여 끝없이 올라가게
     // ---------------------------------------------
     const creditsWindow = document.getElementById('creditsWindow');
-    if (motion && creditsWindow) {
+
+    function setupCredits() {
+        if (!creditsWindow) return;
         const track = creditsWindow.querySelector('.credits-track');
         const copy = track.querySelector('.credits-list').cloneNode(true);
         copy.setAttribute('aria-hidden', 'true');
@@ -436,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (motion && finePointer) {
+    function setupPointer() {
         if (hero) {
             hero.addEventListener('pointermove', (e) => {
                 const rect = hero.getBoundingClientRect();
@@ -547,7 +562,26 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
-    measure();
+    // ---------------------------------------------
+    // 움직임 켜기 — 처음부터 재생하는 경우, 또는 멈춘 화면에서 재생 버튼을 눌렀을 때 한 번 실행
+    // ---------------------------------------------
+    let motionReady = false;
+
+    function startMotion() {
+        motion = true;
+        if (motionReady) return;
+        motionReady = true;
+        root.classList.remove('still');
+        root.classList.add('motion');
+        if (offscreenObserver) scenes.forEach(scene => offscreenObserver.observe(scene));
+        setupSkillMarquees();
+        setupCredits();
+        if (finePointer) setupPointer();
+        measure();
+    }
+
+    if (motion) startMotion();
+    else measure();
     requestAnimationFrame(tick);
 
     // ---------------------------------------------

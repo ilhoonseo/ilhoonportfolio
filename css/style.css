@@ -467,6 +467,36 @@ body::after {
     display: block;
 }
 
+/* 멈춘 화면으로 시작한 경우(.still): 눈에 띄는 노란 "▶ 재생" 버튼으로 */
+:root.still .hud-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: auto;
+    height: 34px;
+    padding: 0 0.95rem 0 0.8rem;
+    border-color: var(--bar-yellow);
+    border-radius: 999px;
+    background: var(--bar-yellow);
+    color: var(--on-bar);
+}
+
+:root.still .hud-play .i-play,
+:root.still .hud-play-label {
+    display: block;
+}
+
+:root.still .hud-play .i-pause {
+    display: none;
+}
+
+.hud-play-label {
+    display: none;
+    font: 700 0.8rem/1 var(--f-body);
+    letter-spacing: 0;
+    text-transform: none;
+}
+
 /* 일시정지: 화면의 모든 CSS 애니메이션을 그 자리에서 멈춤 (오프닝은 예외) */
 :root.is-paused *,
 :root.is-paused *::before,
@@ -3820,15 +3850,13 @@ body::after {
     html {
         scroll-behavior: auto;
     }
+}
 
-    *,
-    *::before,
-    *::after {
-        animation: none !important;
-        transition: none !important;
-    }
-
-    .leader {
-        display: none;
-    }
+/* 멈춘 화면: 기기의 '애니메이션 줄이기' 설정을 따라 움직임을 모두 끄고 완성된 화면만 보여줌.
+   하단 재생 버튼을 누르면 main.js가 .still을 떼고 재생을 시작함 */
+:root.still *,
+:root.still *::before,
+:root.still *::after {
+    animation: none !important;
+    transition: none !important;
 }
