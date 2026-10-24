@@ -380,7 +380,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 첫 화면에서 한동안 스크롤하지 않으면 "아래로 내려서 더 보기" 안내를 통통 튀게
+    const scrollCue = document.getElementById('scrollCue');
+    const nudgeTimer = setTimeout(() => {
+        if (scrollCue && window.scrollY < 40) scrollCue.classList.add('is-nudge');
+    }, introMs + 7000);
+
     function updateScroll(y) {
+        if (y > 40) {
+            clearTimeout(nudgeTimer);
+            if (scrollCue) scrollCue.classList.remove('is-nudge');
+        }
         const progress = clamp(y / maxScroll);
         if (hudBar) hudBar.style.setProperty('--progress', progress.toFixed(4));
         nav.classList.toggle('is-scrolled', y > 24);
